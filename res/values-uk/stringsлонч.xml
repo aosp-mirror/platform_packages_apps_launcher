@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"Головний екран"</string>
+    <string name="folder_name">"Папка"</string>
+    <string name="chooser_wallpaper">"Вибір фонового малюнку із"</string>
+    <string name="wallpaper_instructions">"Встановити фоновий малюнок"</string>
+    <string name="pick_wallpaper">"Галерея фонових малюнків"</string>
+    <string name="activity_not_found">"Цей додаток відсутній на вашому телефоні."</string>
+    <string name="rename_folder_label">"Назва папки"</string>
+    <string name="rename_folder_title">"Переіменування папки"</string>
+    <string name="rename_action">"ОК"</string>
+    <string name="cancel_action">"Відмінити"</string>
+    <string name="menu_item_add_item">"Додавання на головний екран"</string>
+    <string name="group_applications">"Додаток"</string>
+    <string name="group_shortcuts">"Ярлик"</string>
+    <string name="group_live_folders">"Динамічна папка"</string>
+    <string name="group_widgets">"Віджет"</string>
+    <string name="group_wallpapers">"Фоновий малюнок"</string>
+    <string name="add_folder">"Папка"</string>
+    <string name="add_clock">"Годинник"</string>
+    <string name="add_photo_frame">"Рамка для малюнку"</string>
+    <string name="add_search">"Пошук"</string>
+    <string name="out_of_space">"На головному екрані більше немає місця."</string>
+    <string name="menu_add">"Додати"</string>
+    <string name="menu_wallpaper">"Фоновий малюнок"</string>
+    <string name="menu_search">"Пошук"</string>
+    <string name="menu_notifications">"Сповіщення"</string>
+    <string name="menu_settings">"Налаштування"</string>
+    <string name="permlab_install_shortcut">"встановити ярлики"</string>
+    <string name="permdesc_install_shortcut">"Дозволяє додатку додавати ярлики без участі користувача."</string>
+    <string name="permlab_uninstall_shortcut">"видалити ярлики"</string>
+    <string name="permdesc_uninstall_shortcut">"Дозволяє додатку видаляти ярлики без участі користувача."</string>
+    <string name="permlab_read_settings">"зчитувати ярлики і налаштування головного екрану"</string>
+    <string name="permdesc_read_settings">"Дозволяє додатку зчитувати налаштування і ярлики на головному екрані."</string>
+    <string name="permlab_write_settings">"записувати ярлики і налаштування головного екрану"</string>
+    <string name="permdesc_write_settings">"Дозволяє додатку змінювати налаштування і ярлики на головному екрані."</string>
+    <string name="search_hint">"Пошук Google"</string>
+</resources>
