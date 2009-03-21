@@ -28,6 +28,8 @@
     <string name="menu_item_add_item">"Додавання на головний екран"</string>
     <string name="group_applications">"Додаток"</string>
     <string name="group_shortcuts">"Ярлик"</string>
+	<string name="group_search">"Пошук"</string>
+    <string name="group_folder">"Папка"</string>
     <string name="group_live_folders">"Динамічна папка"</string>
     <string name="group_widgets">"Віджет"</string>
     <string name="group_wallpapers">"Фоновий малюнок"</string>
@@ -36,6 +38,8 @@
     <string name="add_photo_frame">"Рамка для малюнку"</string>
     <string name="add_search">"Пошук"</string>
     <string name="out_of_space">"На головному екрані більше немає місця."</string>
+    <string name="title_select_shortcut">"Виберіть ярлик"</string>
+    <string name="title_select_live_folder">"Виберить активну папку"</string>
     <string name="menu_add">"Додати"</string>
     <string name="menu_wallpaper">"Фоновий малюнок"</string>
     <string name="menu_search">"Пошук"</string>
@@ -50,4 +54,6 @@
     <string name="permlab_write_settings">"записувати ярлики і налаштування головного екрану"</string>
     <string name="permdesc_write_settings">"Дозволяє додатку змінювати налаштування і ярлики на головному екрані."</string>
     <string name="search_hint">"Пошук Google"</string>
+	<!-- no translation found for gadget_error_text (8359351016167075858) -->
+	<skip />
 </resources>
