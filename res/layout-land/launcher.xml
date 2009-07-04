@@ -22,17 +22,19 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
-    <!-- The workspace contains 3 screens of cells -->
+    <!-- The workspace contains 5 screens of cells -->
     <com.android.launcher.Workspace
         android:id="@+id/workspace"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
 
-        launcher:defaultScreen="1">
+        launcher:defaultScreen="2">
 
         <include android:id="@+id/cell1" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell2" layout="@layout/workspace_screen" />
         <include android:id="@+id/cell3" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell4" layout="@layout/workspace_screen" />
+        <include android:id="@+id/cell5" layout="@layout/workspace_screen" />
 
     </com.android.launcher.Workspace>
 
