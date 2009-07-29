@@ -16,6 +16,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name">"ホーム"</string>
+    <!-- no translation found for uid_name (3371120195364560632) -->
+    <skip />
     <string name="folder_name">"フォルダ"</string>
     <string name="chooser_wallpaper">"壁紙を選択"</string>
     <string name="wallpaper_instructions">"壁紙に設定"</string>
@@ -38,12 +40,20 @@
     <string name="add_photo_frame">"写真フレーム"</string>
     <string name="add_search">"検索"</string>
     <string name="out_of_space">"ホーム画面に空きスペースがありません。"</string>
+    <!-- no translation found for shortcut_installed (6623689857689040689) -->
+    <skip />
+    <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
+    <skip />
+    <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
+    <skip />
     <string name="title_select_shortcut">"ショートカットを選択"</string>
     <string name="title_select_live_folder">"フォルダの選択"</string>
     <string name="menu_add">"追加"</string>
     <string name="menu_wallpaper">"壁紙"</string>
     <string name="menu_search">"検索"</string>
     <string name="menu_notifications">"通知"</string>
+    <!-- no translation found for menu_gestures (514678675575912237) -->
+    <skip />
     <string name="menu_settings">"設定"</string>
     <string name="permlab_install_shortcut">"ショートカットのインストール"</string>
     <string name="permdesc_install_shortcut">"ユーザー操作なしでショートカットの追加をアプリケーションに許可します。"</string>

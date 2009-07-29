@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="application_name">"Start"</string>
+    <!-- no translation found for uid_name (3371120195364560632) -->
+    <skip />
+    <string name="folder_name">"Mappe"</string>
+    <string name="chooser_wallpaper">"Vælg tapet fra"</string>
+    <string name="wallpaper_instructions">"Angiv tapet"</string>
+    <string name="pick_wallpaper">"Tapetgalleri"</string>
+    <string name="activity_not_found">"Programmet er ikke installeret på din telefon."</string>
+    <string name="rename_folder_label">"Mappenavn"</string>
+    <string name="rename_folder_title">"Omdøb mappe"</string>
+    <string name="rename_action">"OK"</string>
+    <string name="cancel_action">"Annuller"</string>
+    <string name="menu_item_add_item">"Føj til Startskærm"</string>
+    <string name="group_applications">"Programmer"</string>
+    <string name="group_shortcuts">"Genveje"</string>
+    <string name="group_search">"Søg"</string>
+    <string name="group_folder">"Ny mappe"</string>
+    <string name="group_live_folders">"Mapper"</string>
+    <string name="group_widgets">"Widgets"</string>
+    <string name="group_wallpapers">"Tapeter"</string>
+    <string name="add_folder">"Mappe"</string>
+    <string name="add_clock">"Ur"</string>
+    <string name="add_photo_frame">"Billedramme"</string>
+    <string name="add_search">"Søg"</string>
+    <string name="out_of_space">"Der er ikke mere plads på Startskærmen."</string>
+    <!-- no translation found for shortcut_installed (6623689857689040689) -->
+    <skip />
+    <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
+    <skip />
+    <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
+    <skip />
+    <string name="title_select_shortcut">"Vælg genvej"</string>
+    <string name="title_select_live_folder">"Vælg mappe"</string>
+    <string name="menu_add">"Tilføj"</string>
+    <string name="menu_wallpaper">"Tapet"</string>
+    <string name="menu_search">"Søg"</string>
+    <string name="menu_notifications">"Meddelelser"</string>
+    <!-- no translation found for menu_gestures (514678675575912237) -->
+    <skip />
+    <string name="menu_settings">"Indstillinger"</string>
+    <string name="permlab_install_shortcut">"installer genveje"</string>
+    <string name="permdesc_install_shortcut">"Tillader et program at tilføje genveje uden brugerindgriben."</string>
+    <string name="permlab_uninstall_shortcut">"afinstaller genveje"</string>
+    <string name="permdesc_uninstall_shortcut">"Tillader et program at fjerne genveje uden brugerindgriben."</string>
+    <string name="permlab_read_settings">"læs indstillinger og genveje for Start"</string>
+    <string name="permdesc_read_settings">"Tillader et program at læse indstillingerne og genvejene i Start."</string>
+    <string name="permlab_write_settings">"skriv indstillinger og genveje for Start"</string>
+    <string name="permdesc_write_settings">"Tillader et program at ændre indstillingerne og genvejene i Start."</string>
+    <string name="search_hint">"Google-søgning"</string>
+    <string name="gadget_error_text">"Der er problemer med at indlæse widget"</string>
+</resources>

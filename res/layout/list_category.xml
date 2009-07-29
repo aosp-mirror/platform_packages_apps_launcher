@@ -15,17 +15,4 @@
 -->
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@android:id/text1"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-
-    android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-
-    android:drawablePadding="12dip"
-    android:paddingLeft="6dip"
-    android:paddingRight="6dip"
-
-    android:ellipsize="marquee"
-    android:singleLine="true"
-    android:textAppearance="?android:attr/textAppearanceLarge" />
+    style="?android:attr/listSeparatorTextViewStyle" />

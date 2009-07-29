@@ -15,54 +15,54 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="application_name">"Página inicial"</string>
+    <string name="application_name">"Home"</string>
     <!-- no translation found for uid_name (3371120195364560632) -->
     <skip />
     <string name="folder_name">"Pasta"</string>
-    <string name="chooser_wallpaper">"Selecionar papel de parede de"</string>
-    <string name="wallpaper_instructions">"Definir papel de parede"</string>
-    <string name="pick_wallpaper">"Galeria de papel de parede"</string>
-    <string name="activity_not_found">"O aplicativo não está instalado no seu telefone."</string>
+    <string name="chooser_wallpaper">"Seleccionar imagem de fundo a partir de"</string>
+    <string name="wallpaper_instructions">"Definir imagem de fundo"</string>
+    <string name="pick_wallpaper">"Galeria de imagens de fundo"</string>
+    <string name="activity_not_found">"A aplicação não está instalada no telefone."</string>
     <string name="rename_folder_label">"Nome da pasta"</string>
-    <string name="rename_folder_title">"Renomear pasta"</string>
+    <string name="rename_folder_title">"Mudar o nome da pasta"</string>
     <string name="rename_action">"OK"</string>
     <string name="cancel_action">"Cancelar"</string>
-    <string name="menu_item_add_item">"Adicionar à tela da Página inicial"</string>
-    <string name="group_applications">"Aplicativos"</string>
+    <string name="menu_item_add_item">"Adicionar ao ecrã principal"</string>
+    <string name="group_applications">"Aplicações"</string>
     <string name="group_shortcuts">"Atalhos"</string>
     <string name="group_search">"Pesquisar"</string>
     <string name="group_folder">"Nova pasta"</string>
     <string name="group_live_folders">"Pastas"</string>
     <string name="group_widgets">"Widgets"</string>
-    <string name="group_wallpapers">"Papéis de parede"</string>
+    <string name="group_wallpapers">"Imagens de fundo"</string>
     <string name="add_folder">"Pasta"</string>
     <string name="add_clock">"Relógio"</string>
-    <string name="add_photo_frame">"Frame da imagem"</string>
+    <string name="add_photo_frame">"Moldura de imagem"</string>
     <string name="add_search">"Pesquisar"</string>
-    <string name="out_of_space">"Não há mais espaço nesta tela da Página inicial."</string>
+    <string name="out_of_space">"Não existe espaço suficiente neste ecrã principal."</string>
     <!-- no translation found for shortcut_installed (6623689857689040689) -->
     <skip />
     <!-- no translation found for shortcut_uninstalled (2758997515869993129) -->
     <skip />
     <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
     <skip />
-    <string name="title_select_shortcut">"Selecionar atalho"</string>
-    <string name="title_select_live_folder">"Selecionar pasta"</string>
+    <string name="title_select_shortcut">"Seleccione o atalho"</string>
+    <string name="title_select_live_folder">"Seleccione a pasta"</string>
     <string name="menu_add">"Adicionar"</string>
-    <string name="menu_wallpaper">"Papel de parede"</string>
+    <string name="menu_wallpaper">"Imagem de fundo"</string>
     <string name="menu_search">"Pesquisar"</string>
     <string name="menu_notifications">"Notificações"</string>
     <!-- no translation found for menu_gestures (514678675575912237) -->
     <skip />
-    <string name="menu_settings">"Configurações"</string>
+    <string name="menu_settings">"Definições"</string>
     <string name="permlab_install_shortcut">"instalar atalhos"</string>
-    <string name="permdesc_install_shortcut">"Permite que um aplicativo adicione os atalhos sem a intervenção do usuário."</string>
+    <string name="permdesc_install_shortcut">"Permite que uma aplicação adicione atalhos sem a intervenção do utilizador."</string>
     <string name="permlab_uninstall_shortcut">"desinstalar atalhos"</string>
-    <string name="permdesc_uninstall_shortcut">"Permite que um aplicativo remova os atalhos sem a intervenção do usuário."</string>
-    <string name="permlab_read_settings">"ler configurações e atalhos da Página inicial"</string>
-    <string name="permdesc_read_settings">"Permite que um aplicativo leia as configurações e atalhos na Página inicial."</string>
-    <string name="permlab_write_settings">"gravar configurações e atalhos da Página inicial"</string>
-    <string name="permdesc_write_settings">"Permite que um aplicativo altere as configurações e atalhos na Página inicial."</string>
+    <string name="permdesc_uninstall_shortcut">"Permite que uma aplicação remova atalhos sem a intervenção do utilizador."</string>
+    <string name="permlab_read_settings">"ler definições e atalhos do ecrã principal"</string>
+    <string name="permdesc_read_settings">"Permite que uma aplicação leia as definições e os atalhos do ecrã principal."</string>
+    <string name="permlab_write_settings">"escrever definições e atalhos do ecrã principal"</string>
+    <string name="permdesc_write_settings">"Permite que uma aplicação altere as definições e os atalhos do ecrã principal."</string>
     <string name="search_hint">"Pesquisa do Google"</string>
-    <string name="gadget_error_text">"Problema ao carregar o widget"</string>
+    <string name="gadget_error_text">"Erro ao carregar o widget"</string>
 </resources>

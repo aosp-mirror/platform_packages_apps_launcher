@@ -16,6 +16,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name">"Página principal"</string>
+    <!-- no translation found for uid_name (3371120195364560632) -->
+    <skip />
     <string name="folder_name">"Carpeta"</string>
     <string name="chooser_wallpaper">"Seleccionar papel tapiz desde"</string>
     <string name="wallpaper_instructions">"Definir papel tapiz"</string>
@@ -26,19 +28,13 @@
     <string name="rename_action">"Aceptar"</string>
     <string name="cancel_action">"Cancelar"</string>
     <string name="menu_item_add_item">"Agregar a la pantalla Página principal"</string>
-    <!-- no translation found for group_applications (4118484163419674240) -->
-    <skip />
-    <!-- no translation found for group_shortcuts (9133529424900391877) -->
-    <skip />
+    <string name="group_applications">"Aplicaciones"</string>
+    <string name="group_shortcuts">"Accesos directos"</string>
     <string name="group_search">"Buscar"</string>
-    <!-- no translation found for group_folder (5143593791798929193) -->
-    <skip />
-    <!-- no translation found for group_live_folders (2664945399140647217) -->
-    <skip />
-    <!-- no translation found for group_widgets (6704978494073105844) -->
-    <skip />
-    <!-- no translation found for group_wallpapers (1568191644272224858) -->
-    <skip />
+    <string name="group_folder">"Carpeta nueva"</string>
+    <string name="group_live_folders">"Carpetas"</string>
+    <string name="group_widgets">"Controles"</string>
+    <string name="group_wallpapers">"Papeles tapiz"</string>
     <string name="add_folder">"Carpeta"</string>
     <string name="add_clock">"Reloj"</string>
     <string name="add_photo_frame">"Marco de imagen"</string>
@@ -51,12 +47,13 @@
     <!-- no translation found for shortcut_duplicate (4887186782641532074) -->
     <skip />
     <string name="title_select_shortcut">"Seleccionar acceso directo"</string>
-    <!-- no translation found for title_select_live_folder (3753447798805166749) -->
-    <skip />
+    <string name="title_select_live_folder">"Seleccionar carpeta"</string>
     <string name="menu_add">"Agregar"</string>
     <string name="menu_wallpaper">"Papel tapiz"</string>
     <string name="menu_search">"Buscar"</string>
     <string name="menu_notifications">"Notificaciones"</string>
+    <!-- no translation found for menu_gestures (514678675575912237) -->
+    <skip />
     <string name="menu_settings">"Configuración"</string>
     <string name="permlab_install_shortcut">"instalar accesos directos"</string>
     <string name="permdesc_install_shortcut">"Permite a una aplicación agregar accesos directos sin intervención del usuario."</string>

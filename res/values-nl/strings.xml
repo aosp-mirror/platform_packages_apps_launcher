@@ -16,6 +16,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="application_name">"Startpagina"</string>
+    <string name="uid_name">"Android-kerntoepassingen"</string>
     <string name="folder_name">"Map"</string>
     <string name="chooser_wallpaper">"Achtergrond selecteren in"</string>
     <string name="wallpaper_instructions">"Achtergrond instellen"</string>
@@ -38,12 +39,16 @@
     <string name="add_photo_frame">"Fotolijstje"</string>
     <string name="add_search">"Zoeken"</string>
     <string name="out_of_space">"Er is geen ruimte meer op dit startscherm."</string>
+    <string name="shortcut_installed">"Snelkoppeling \'%s\' is geïnstalleerd."</string>
+    <string name="shortcut_uninstalled">"Snelkoppeling \'%s\' is verwijderd."</string>
+    <string name="shortcut_duplicate">"Snelkoppeling \'%s\' bestaat al."</string>
     <string name="title_select_shortcut">"Snelkoppeling selecteren"</string>
     <string name="title_select_live_folder">"Map selecteren"</string>
     <string name="menu_add">"Toevoegen"</string>
     <string name="menu_wallpaper">"Achtergrond"</string>
     <string name="menu_search">"Zoeken"</string>
     <string name="menu_notifications">"Meldingen"</string>
+    <string name="menu_gestures">"Gebaren"</string>
     <string name="menu_settings">"Instellingen"</string>
     <string name="permlab_install_shortcut">"snelkoppelingen installeren"</string>
     <string name="permdesc_install_shortcut">"Een toepassing toestaan om snelkoppelingen toe te voegen zonder tussenkomst van de gebruiker."</string>
