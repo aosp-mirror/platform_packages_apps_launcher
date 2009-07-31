@@ -96,8 +96,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final boolean PROFILE_ROTATE = false;
     private static final boolean DEBUG_USER_INTERFACE = false;
 
-    private static final int WALLPAPER_SCREENS_SPAN = 2;
-
     private static final int MENU_GROUP_ADD = 1;
     private static final int MENU_ADD = Menu.FIRST + 1;
     private static final int MENU_WALLPAPER_SETTINGS = MENU_ADD + 1;
@@ -118,6 +116,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     static final String EXTRA_CUSTOM_WIDGET = "custom_widget";
     static final String SEARCH_WIDGET = "search_widget";
 
+    static final int WALLPAPER_SCREENS_SPAN = 2;
     static final int SCREEN_COUNT = 3;
     static final int DEFAULT_SCREN = 1;
     static final int NUMBER_CELLS_X = 4;

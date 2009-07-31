@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.Display;
 import android.widget.Scroller;
 import android.widget.TextView;
 import android.os.Parcelable;
@@ -559,8 +560,15 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
         if (mWallpaperLoaded) {
             mWallpaperLoaded = false;
-            mWallpaper = Utilities.centerToFit(mWallpaper, width,
-                    MeasureSpec.getSize(heightMeasureSpec), getContext());
+
+            Display display = mLauncher.getWindowManager().getDefaultDisplay();
+            boolean isPortrait = display.getWidth() < display.getHeight();
+
+            final int _width = isPortrait ? display.getWidth() : display.getHeight();
+            final int _height = isPortrait ? display.getHeight() : display.getWidth();
+            
+            mWallpaper = Utilities.centerToFit(mWallpaper, _width * Launcher.WALLPAPER_SCREENS_SPAN,
+                    _height, mLauncher);
             mWallpaperWidth = mWallpaper.getWidth();
             mWallpaperHeight = mWallpaper.getHeight();
         }
