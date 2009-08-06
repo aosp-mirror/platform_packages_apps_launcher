@@ -21,9 +21,9 @@ import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
 import android.app.ISearchManager;
-import android.app.IWallpaperService;
 import android.app.SearchManager;
 import android.app.StatusBarManager;
+import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -46,7 +46,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.MessageQueue;
@@ -343,19 +342,14 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     private void setWallpaperDimension() {
-        IBinder binder = ServiceManager.getService(WALLPAPER_SERVICE);
-        IWallpaperService wallpaperService = IWallpaperService.Stub.asInterface(binder);
+        WallpaperManager wpm = (WallpaperManager)getSystemService(WALLPAPER_SERVICE);
 
         Display display = getWindowManager().getDefaultDisplay();
         boolean isPortrait = display.getWidth() < display.getHeight();
 
         final int width = isPortrait ? display.getWidth() : display.getHeight();
         final int height = isPortrait ? display.getHeight() : display.getWidth();
-        try {
-            wallpaperService.setDimensionHints(width * WALLPAPER_SCREENS_SPAN, height);
-        } catch (RemoteException e) {
-            // System is dead!
-        }
+        wpm.setDimensionHints(width * WALLPAPER_SCREENS_SPAN, height);
     }
 
     @Override
