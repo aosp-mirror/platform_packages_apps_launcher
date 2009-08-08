@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.lang.ref.WeakReference;
 import java.text.Collator;
 import java.net.URISyntaxException;
@@ -126,7 +127,7 @@ public class LauncherModel {
         mApplicationsLoaded = false;
 
         if (!isLaunching) {
-            startApplicationsLoader(launcher, false);
+            startApplicationsLoaderLocked(launcher, false);
             return false;
         }
 
@@ -135,7 +136,9 @@ public class LauncherModel {
 
     private synchronized void stopAndWaitForApplicationsLoader() {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            if (DEBUG_LOADERS) d(LOG_TAG, "  --> wait for applications loader");
+            if (DEBUG_LOADERS) {
+                d(LOG_TAG, "  --> wait for applications loader (" + mApplicationsLoader.mId + ")");
+            }
 
             mApplicationsLoader.stop();
             // Wait for the currently running thread to finish, this can take a little
@@ -143,12 +146,17 @@ public class LauncherModel {
             try {
                 mApplicationsLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
             } catch (InterruptedException e) {
-                // EMpty
+                // Empty
             }
         }
     }
 
     private synchronized void startApplicationsLoader(Launcher launcher, boolean isLaunching) {
+        if (DEBUG_LOADERS) d(LOG_TAG, "  --> starting applications loader unlocked");
+        startApplicationsLoaderLocked(launcher, isLaunching);
+    }
+
+    private void startApplicationsLoaderLocked(Launcher launcher, boolean isLaunching) {
         if (DEBUG_LOADERS) d(LOG_TAG, "  --> starting applications loader");
 
         stopAndWaitForApplicationsLoader();
@@ -160,7 +168,7 @@ public class LauncherModel {
 
     synchronized void addPackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            startApplicationsLoader(launcher, false);
+            startApplicationsLoaderLocked(launcher, false);
             return;
         }
 
@@ -186,7 +194,7 @@ public class LauncherModel {
     synchronized void removePackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
             dropApplicationCache(); // TODO: this could be optimized
-            startApplicationsLoader(launcher, false);
+            startApplicationsLoaderLocked(launcher, false);
             return;
         }
 
@@ -221,7 +229,7 @@ public class LauncherModel {
 
     synchronized void updatePackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            startApplicationsLoader(launcher, false);
+            startApplicationsLoaderLocked(launcher, false);
             return;
         }
 
@@ -265,7 +273,7 @@ public class LauncherModel {
 
     synchronized void syncPackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            startApplicationsLoader(launcher, false);
+            startApplicationsLoaderLocked(launcher, false);
             return;
         }
 
@@ -465,16 +473,21 @@ public class LauncherModel {
         application.filtered = false;
     }
 
+    private static final AtomicInteger sAppsLoaderCount = new AtomicInteger(1);
+
     private class ApplicationsLoader implements Runnable {
         private final WeakReference<Launcher> mLauncher;
 
         private volatile boolean mStopped;
         private volatile boolean mRunning;
         private final boolean mIsLaunching;
+        private final int mId;
 
         ApplicationsLoader(Launcher launcher, boolean isLaunching) {
             mIsLaunching = isLaunching;
             mLauncher = new WeakReference<Launcher>(launcher);
+            mRunning = true;
+            mId = sAppsLoaderCount.getAndIncrement();
         }
 
         void stop() {
@@ -486,7 +499,7 @@ public class LauncherModel {
         }
 
         public void run() {
-            mRunning = true;
+            if (DEBUG_LOADERS) d(LOG_TAG, "  ----> running applications loader (" + mId + ")");
 
             // Elevate priority when Home launches for the first time to avoid
             // starving at boot time. Staring at a blank home is not cool.
@@ -525,6 +538,8 @@ public class LauncherModel {
 
             if (!mStopped) {
                 mApplicationsLoaded = true;
+            } else {
+                if (DEBUG_LOADERS) d(LOG_TAG, "  ----> applications loader stopped (" + mId + ")");                                
             }
             mRunning = false;
         }
@@ -550,6 +565,7 @@ public class LauncherModel {
             if (mFirst) {
                 applicationList.setNotifyOnChange(false);
                 applicationList.clear();
+                if (DEBUG_LOADERS) d(LOG_TAG, "  ----> cleared application list");
                 mFirst = false;
             }
 
