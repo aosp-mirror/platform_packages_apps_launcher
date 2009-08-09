@@ -349,7 +349,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
         final int width = isPortrait ? display.getWidth() : display.getHeight();
         final int height = isPortrait ? display.getHeight() : display.getWidth();
-        wpm.setDimensionHints(width * WALLPAPER_SCREENS_SPAN, height);
+        wpm.suggestDesiredDimensions(width * WALLPAPER_SCREENS_SPAN, height);
     }
 
     @Override
