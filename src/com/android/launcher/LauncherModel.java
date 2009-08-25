@@ -76,12 +76,16 @@ public class LauncherModel {
             new HashMap<ComponentName, ApplicationInfo>(INITIAL_ICON_CACHE_CAPACITY);
 
     synchronized void abortLoaders() {
+        if (DEBUG_LOADERS) d(LOG_TAG, "aborting loaders");
+
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
+            if (DEBUG_LOADERS) d(LOG_TAG, "  --> aborting applications loader");
             mApplicationsLoader.stop();
             mApplicationsLoaded = false;
         }
 
         if (mDesktopItemsLoader != null && mDesktopItemsLoader.isRunning()) {
+            if (DEBUG_LOADERS) d(LOG_TAG, "  --> aborting workspace loader");
             mDesktopItemsLoader.stop();
             mDesktopItemsLoaded = false;
         }
@@ -474,6 +478,7 @@ public class LauncherModel {
     }
 
     private static final AtomicInteger sAppsLoaderCount = new AtomicInteger(1);
+    private static final AtomicInteger sWorkspaceLoaderCount = new AtomicInteger(1);
 
     private class ApplicationsLoader implements Runnable {
         private final WeakReference<Launcher> mLauncher;
@@ -612,7 +617,7 @@ public class LauncherModel {
             if (DEBUG_LOADERS) d(LOG_TAG, "  --> items loaded, return");
             if (loadApplications) startApplicationsLoader(launcher, true);
             // We have already loaded our data from the DB
-            launcher.onDesktopItemsLoaded();
+            launcher.onDesktopItemsLoaded(mDesktopItems, mDesktopAppWidgets);
             return;
         }
 
@@ -720,6 +725,7 @@ public class LauncherModel {
         private final boolean mLocaleChanged;
         private final boolean mLoadApplications;
         private final boolean mIsLaunching;
+        private final int mId;        
 
         DesktopItemsLoader(Launcher launcher, boolean localeChanged, boolean loadApplications,
                 boolean isLaunching) {
@@ -727,6 +733,7 @@ public class LauncherModel {
             mIsLaunching = isLaunching;
             mLauncher = new WeakReference<Launcher>(launcher);
             mLocaleChanged = localeChanged;
+            mId = sWorkspaceLoaderCount.getAndIncrement();
         }
 
         void stop() {
@@ -738,6 +745,8 @@ public class LauncherModel {
         }
 
         public void run() {
+            if (DEBUG_LOADERS) d(LOG_TAG, "  ----> running workspace loader (" + mId + ")");
+
             mRunning = true;
 
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
@@ -943,16 +952,39 @@ public class LauncherModel {
             }
 
             if (!mStopped) {
-                launcher.runOnUiThread(new Runnable() {
-                    public void run() {
-                        launcher.onDesktopItemsLoaded();
-                    }
-                });
-                if (mLoadApplications) startApplicationsLoader(launcher, mIsLaunching);
-            }
+                if (DEBUG_LOADERS)  {
+                    d(LOG_TAG, "  --> done loading workspace");
+                    d(LOG_TAG, "  ----> worskpace items=" + desktopItems.size());                
+                    d(LOG_TAG, "  ----> worskpace widgets=" + desktopAppWidgets.size());
+                }
 
-            if (!mStopped) {
+                // Create a copy of the lists in case the workspace loader is restarted
+                // and the list are cleared before the UI can go through them
+                final ArrayList<ItemInfo> uiDesktopItems =
+                        new ArrayList<ItemInfo>(desktopItems);
+                final ArrayList<LauncherAppWidgetInfo> uiDesktopWidgets =
+                        new ArrayList<LauncherAppWidgetInfo>(desktopAppWidgets);
+
+                if (!mStopped) {
+                    d(LOG_TAG, "  ----> items cloned, ready to refresh UI");                
+                    launcher.runOnUiThread(new Runnable() {
+                        public void run() {
+                            if (DEBUG_LOADERS) d(LOG_TAG, "  ----> onDesktopItemsLoaded()");
+                            launcher.onDesktopItemsLoaded(uiDesktopItems, uiDesktopWidgets);
+                        }
+                    });
+                }
+
+                if (mLoadApplications) {
+                    if (DEBUG_LOADERS) {
+                        d(LOG_TAG, "  ----> loading applications from workspace loader");
+                    }
+                    startApplicationsLoader(launcher, mIsLaunching);
+                }
+
                 mDesktopItemsLoaded = true;
+            } else {
+                if (DEBUG_LOADERS) d(LOG_TAG, "  ----> worskpace loader was stopped");
             }
             mRunning = false;
         }
