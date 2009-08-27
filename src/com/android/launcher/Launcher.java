@@ -18,7 +18,6 @@ package com.android.launcher;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.app.Dialog;
 import android.app.ISearchManager;
 import android.app.SearchManager;
@@ -41,7 +40,6 @@ import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.Bundle;
@@ -95,8 +93,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static final boolean PROFILE_ROTATE = false;
     private static final boolean DEBUG_USER_INTERFACE = false;
 
-    private static final boolean ACTIVE_WALLPAPER = true;
-    
     private static final int MENU_GROUP_ADD = 1;
     private static final int MENU_ADD = Menu.FIRST + 1;
     private static final int MENU_WALLPAPER_SETTINGS = MENU_ADD + 1;
@@ -157,12 +153,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     private static final LauncherModel sModel = new LauncherModel();
 
-    private static Bitmap sWallpaper;
-
     private static final Object sLock = new Object();
     private static int sScreen = DEFAULT_SCREN;
-
-    private static WallpaperIntentReceiver sWallpaperReceiver;
 
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
     private final ContentObserver mObserver = new FavoritesChangeObserver();
@@ -200,9 +192,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private boolean mWaitingForResult;
     private boolean mLocaleChanged;
 
-    private boolean mHomeDown;
-    private boolean mBackDown;
-    
     private Bundle mSavedInstanceState;
 
     private DesktopBinder mBinder;
@@ -559,7 +548,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         workspace.setOnLongClickListener(this);
         workspace.setDragger(dragLayer);
         workspace.setLauncher(this);
-        loadWallpaper();
 
         deleteZone.setLauncher(this);
         deleteZone.setDragController(dragLayer);
@@ -1275,19 +1263,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
      * wallpaper.
      */
     private void registerIntentReceivers() {
-        if (!ACTIVE_WALLPAPER) {
-            if (sWallpaperReceiver == null) {
-                final Application application = getApplication();
-    
-                sWallpaperReceiver = new WallpaperIntentReceiver(application, this);
-    
-                IntentFilter filter = new IntentFilter(Intent.ACTION_WALLPAPER_CHANGED);
-                application.registerReceiver(sWallpaperReceiver, filter);
-            } else {
-                sWallpaperReceiver.setLauncher(this);
-            }
-        }
-
         IntentFilter filter = new IntentFilter(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
@@ -1305,22 +1280,12 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (!hasFocus) {
-            mBackDown = mHomeDown = false;
-        }
-    }
-
-    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+        if (event.getAction() == KeyEvent.ACTION_UP) {
             switch (event.getKeyCode()) {
                 case KeyEvent.KEYCODE_BACK:
-                    mBackDown = true;
                     return true;
                 case KeyEvent.KEYCODE_HOME:
-                    mHomeDown = true;
                     return true;
             }
         } else if (event.getAction() == KeyEvent.ACTION_UP) {
@@ -1334,10 +1299,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                             closeFolder();
                         }
                     }
-                    mBackDown = false;
                     return true;
                 case KeyEvent.KEYCODE_HOME:
-                    mHomeDown = false;
                     return true;
             }
         }
@@ -1580,10 +1543,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         }
     }
 
-    DragController getDragController() {
-        return mDragLayer;
-    }
-
     /**
      * Launches the intent referred by the clicked shortcut.
      *
@@ -1635,23 +1594,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     openFolder(folderInfo);
                 }
             }
-        }
-    }
-
-    private void loadWallpaper() {
-        // Turned off, we are using a wallpaper service now.
-        if (!ACTIVE_WALLPAPER) {
-            // The first time the application is started, we load the wallpaper from
-            // the ApplicationContext
-            if (sWallpaper == null) {
-                final Drawable drawable = getWallpaper();
-                if (drawable instanceof BitmapDrawable) {
-                    sWallpaper = ((BitmapDrawable) drawable).getBitmap();
-                } else {
-                    throw new IllegalStateException("The wallpaper must be a BitmapDrawable.");
-                }
-            }
-            mWorkspace.loadWallpaper(sWallpaper);
         }
     }
 
@@ -2078,43 +2020,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         @Override
         public void onChange(boolean selfChange) {
             onFavoritesChanged();
-        }
-    }
-
-    /**
-     * Receives intents from other applications to change the wallpaper.
-     */
-    private static class WallpaperIntentReceiver extends BroadcastReceiver {
-        private final Application mApplication;
-        private WeakReference<Launcher> mLauncher;
-
-        WallpaperIntentReceiver(Application application, Launcher launcher) {
-            mApplication = application;
-            setLauncher(launcher);
-        }
-
-        void setLauncher(Launcher launcher) {
-            mLauncher = new WeakReference<Launcher>(launcher);
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Load the wallpaper from the ApplicationContext and store it locally
-            // until the Launcher Activity is ready to use it
-            final Drawable drawable = mApplication.getWallpaper();
-            if (drawable instanceof BitmapDrawable) {
-                sWallpaper = ((BitmapDrawable) drawable).getBitmap();
-            } else {
-                throw new IllegalStateException("The wallpaper must be a BitmapDrawable.");
-            }
-
-            // If Launcher is alive, notify we have a new wallpaper
-            if (mLauncher != null) {
-                final Launcher launcher = mLauncher.get();
-                if (launcher != null) {
-                    launcher.loadWallpaper();
-                }
-            }
         }
     }
 

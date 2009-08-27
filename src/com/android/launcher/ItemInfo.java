@@ -129,5 +129,5 @@ class ItemInfo {
             }
         }
     }
-    
+
 }

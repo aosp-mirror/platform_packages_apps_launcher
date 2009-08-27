@@ -633,21 +633,6 @@ public class CellLayout extends ViewGroup {
     }
     
     /**
-     * Drag a child over the specified position
-     * 
-     * @param child The child that is being dropped
-     * @param cellX The child's new x cell location
-     * @param cellY The child's new y cell location 
-     */
-    void onDragOverChild(View child, int cellX, int cellY) {
-        int[] cellXY = mCellXY;
-        pointToCellRounded(cellX, cellY, cellXY);
-        LayoutParams lp = (LayoutParams) child.getLayoutParams();
-        cellToRect(cellXY[0], cellXY[1], lp.cellHSpan, lp.cellVSpan, mDragRect);
-        invalidate();
-    }
-    
-    /**
      * Computes a bounding rectangle for a range of cells
      *  
      * @param cellX X coordinate of upper left corner expressed as a cell position

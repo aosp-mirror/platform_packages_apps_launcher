@@ -41,16 +41,7 @@ class UserFolderInfo extends FolderInfo {
     public void add(ApplicationInfo item) {
         contents.add(item);
     }
-    
-    /**
-     * Remove an app or shortcut
-     * 
-     * @param item
-     */
-    public void remove(ApplicationInfo item) {
-        contents.remove(item);
-    }
-    
+
     @Override
     void onAddToDatabase(ContentValues values) { 
         super.onAddToDatabase(values);

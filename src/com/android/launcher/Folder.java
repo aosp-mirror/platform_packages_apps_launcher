@@ -47,7 +47,6 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
      * Which item is being dragged
      */
     protected ApplicationInfo mDragItem;
-    private boolean mCloneInfo;
 
     /**
      * Used to inflate the Workspace from XML.
@@ -94,19 +93,12 @@ public class Folder extends LinearLayout implements DragSource, OnItemLongClickL
         }
 
         ApplicationInfo app = (ApplicationInfo) parent.getItemAtPosition(position);
-        if (mCloneInfo) {
-            app = new ApplicationInfo(app);
-        }
 
         mDragger.startDrag(view, this, app, DragController.DRAG_ACTION_COPY);
         mLauncher.closeFolder(this);
         mDragItem = app;
 
         return true;
-    }
-
-    void setCloneInfo(boolean cloneInfo) {
-        mCloneInfo = cloneInfo;
     }
 
     public void setDragger(DragController dragger) {

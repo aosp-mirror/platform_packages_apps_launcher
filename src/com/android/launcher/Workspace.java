@@ -21,10 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ComponentName;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
@@ -35,7 +32,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.Display;
 import android.widget.Scroller;
 import android.widget.TextView;
 import android.os.Parcelable;
@@ -59,14 +55,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     private int mDefaultScreen;
 
     private final WallpaperManager mWallpaperManager;
-    
-    private Paint mPaint;
-    private Bitmap mWallpaper;
-
-    private int mWallpaperWidth;
-    private int mWallpaperHeight;
-    private float mWallpaperOffset;
-    private boolean mWallpaperLoaded;
 
     private boolean mFirstLayout = true;
 
@@ -154,22 +142,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mCurrentScreen = mDefaultScreen;
         Launcher.setScreen(mCurrentScreen);
 
-        mPaint = new Paint();
-        mPaint.setDither(false);
-
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mTouchSlop = configuration.getScaledTouchSlop();
         mMaximumVelocity = configuration.getScaledMaximumFlingVelocity();
-    }
-
-    /**
-     * Set the background's wallpaper.
-     */
-    void loadWallpaper(Bitmap bitmap) {
-        mWallpaper = bitmap;
-        mWallpaperLoaded = true;
-        requestLayout();
-        invalidate();
     }
 
     @Override
@@ -262,20 +237,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     /**
-     * Computes a bounding rectangle for a range of cells
-     *
-     * @param cellX X coordinate of upper left corner expressed as a cell position
-     * @param cellY Y coordinate of upper left corner expressed as a cell position
-     * @param cellHSpan Width in cells
-     * @param cellVSpan Height in cells
-     * @param rect Rectnagle into which to put the results
-     */
-    public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, RectF rect) {
-        ((CellLayout)getChildAt(mCurrentScreen)).cellToRect(cellX, cellY,
-                cellHSpan, cellVSpan, rect);
-    }
-
-    /**
      * Sets the current screen.
      *
      * @param currentScreen
@@ -285,13 +246,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         mCurrentScreen = Math.max(0, Math.min(currentScreen, getChildCount() - 1));
         scrollTo(mCurrentScreen * getWidth(), 0);
         invalidate();
-    }
-
-    /**
-     * Shows the default screen (defined by the firstScreen attribute in XML.)
-     */
-    void showDefaultScreen() {
-        setCurrentScreen(mDefaultScreen);
     }
 
     /**
@@ -373,11 +327,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
     }
 
-    void addWidget(View view, Widget widget) {
-        addInScreen(view, widget.screen, widget.cellX, widget.cellY, widget.spanX,
-                widget.spanY, false);
-    }
-
     void addWidget(View view, Widget widget, boolean insert) {
         addInScreen(view, widget.screen, widget.cellX, widget.cellY, widget.spanX,
                 widget.spanY, insert);
@@ -396,29 +345,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             mVacantCache.clearVacantCells();
             mVacantCache = null;
         }
-    }
-    
-    /**
-     * Returns the coordinate of a vacant cell for the current screen.
-     */
-    boolean getVacantCell(int[] vacant, int spanX, int spanY) {
-        CellLayout group = (CellLayout) getChildAt(mCurrentScreen);
-        if (group != null) {
-            return group.getVacantCell(vacant, spanX, spanY);
-        }
-        return false;
-    }
-
-    /**
-     * Adds the specified child in the current screen. The position and dimension of
-     * the child are defined by x, y, spanX and spanY.
-     *
-     * @param child The child to add in one of the workspace's screens.
-     * @param spanX The number of cells spanned horizontally by the child.
-     * @param spanY The number of cells spanned vertically by the child.
-     */
-    void fitInCurrentScreen(View child, int spanX, int spanY) {
-        fitInScreen(child, mCurrentScreen, spanX, spanY);
     }
 
     /**
@@ -486,7 +412,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
     @Override
     public boolean isOpaque() {
-        return mWallpaper != null && !mWallpaper.hasAlpha();
+        return false;
     }
 
     @Override
@@ -512,15 +438,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
 
             canvas.clipRect(mScrollX, top, mScrollX + mDrawerContentWidth,
                     top + mDrawerContentHeight, Region.Op.DIFFERENCE);
-        }
-
-        float x = mScrollX * mWallpaperOffset;
-        if (x + mWallpaperWidth < mRight - mLeft) {
-            x = mRight - mLeft - mWallpaperWidth;
-        }
-
-        if (mWallpaper != null) {
-            canvas.drawBitmap(mWallpaper, x, (mBottom - mTop - mWallpaperHeight) / 2, mPaint);
         }
 
         // ViewGroup.dispatchDraw() supports many features we don't need:
@@ -573,25 +490,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         for (int i = 0; i < count; i++) {
             getChildAt(i).measure(widthMeasureSpec, heightMeasureSpec);
         }
-
-        if (mWallpaperLoaded) {
-            mWallpaperLoaded = false;
-
-            Display display = mLauncher.getWindowManager().getDefaultDisplay();
-            boolean isPortrait = display.getWidth() < display.getHeight();
-
-            final int _width = isPortrait ? display.getWidth() : display.getHeight();
-            final int _height = isPortrait ? display.getHeight() : display.getWidth();
-            
-            mWallpaper = Utilities.centerToFit(mWallpaper, _width * Launcher.WALLPAPER_SCREENS_SPAN,
-                    _height, mLauncher);
-            mWallpaperWidth = mWallpaper.getWidth();
-            mWallpaperHeight = mWallpaper.getHeight();
-        }
-
-        final int wallpaperWidth = mWallpaperWidth;
-        mWallpaperOffset = wallpaperWidth > width ? (count * width - wallpaperWidth) /
-                ((count - 1) * (float) width) : 1.0f;
 
         if (mFirstLayout) {
             scrollTo(mCurrentScreen * width, 0);
@@ -933,10 +831,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             mCurrentScreen = savedState.currentScreen;
             Launcher.setScreen(mCurrentScreen);
         }
-    }
-
-    void addApplicationShortcut(ApplicationInfo info, CellLayout.CellInfo cellInfo) {
-        addApplicationShortcut(info, cellInfo, false);
     }
 
     void addApplicationShortcut(ApplicationInfo info, CellLayout.CellInfo cellInfo,
