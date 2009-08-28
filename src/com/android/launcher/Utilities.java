@@ -25,7 +25,6 @@ import android.graphics.Canvas;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.DisplayMetrics;
 import android.content.res.Resources;
 import android.content.Context;
 
@@ -44,27 +43,6 @@ final class Utilities {
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
                 Paint.FILTER_BITMAP_FLAG));
-    }
-
-    static Bitmap centerToFit(Bitmap bitmap, int width, int height, Context context) {
-        final int bitmapWidth = bitmap.getWidth();
-        final int bitmapHeight = bitmap.getHeight();
-
-        if (bitmapWidth < width || bitmapHeight < height) {
-            int color = context.getResources().getColor(R.color.window_background);
-
-            Bitmap centered = Bitmap.createBitmap(bitmapWidth < width ? width : bitmapWidth,
-                    bitmapHeight < height ? height : bitmapHeight, Bitmap.Config.RGB_565);
-            centered.setDensity(bitmap.getDensity());
-            Canvas canvas = new Canvas(centered);
-            canvas.drawColor(color);
-            canvas.drawBitmap(bitmap, (width - bitmapWidth) / 2.0f, (height - bitmapHeight) / 2.0f,
-                    null);
-
-            bitmap = centered;
-        }
-
-        return bitmap;
     }
 
     /**

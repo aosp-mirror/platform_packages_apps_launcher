@@ -401,16 +401,6 @@ public class CellLayout extends ViewGroup {
     }
     
     /**
-     * Given a point, return the cell that most closely encloses that point
-     * @param x X coordinate of the point
-     * @param y Y coordinate of the point
-     * @param result Array of 2 ints to hold the x and y coordinate of the cell
-     */
-    void pointToCellRounded(int x, int y, int[] result) {
-        pointToCellExact(x + (mCellWidth / 2), y + (mCellHeight / 2), result);
-    }
-
-    /**
      * Given a cell coordinate, return the point that represents the upper left corner of that cell
      * 
      * @param cellX X coordinate of the cell 
@@ -630,34 +620,6 @@ public class CellLayout extends ViewGroup {
         LayoutParams lp = (LayoutParams) child.getLayoutParams();
         lp.isDragging = true;
         mDragRect.setEmpty();
-    }
-    
-    /**
-     * Computes a bounding rectangle for a range of cells
-     *  
-     * @param cellX X coordinate of upper left corner expressed as a cell position
-     * @param cellY Y coordinate of upper left corner expressed as a cell position
-     * @param cellHSpan Width in cells 
-     * @param cellVSpan Height in cells
-     * @param dragRect Rectnagle into which to put the results
-     */
-    public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, RectF dragRect) {
-        final boolean portrait = mPortrait;
-        final int cellWidth = mCellWidth;
-        final int cellHeight = mCellHeight;
-        final int widthGap = mWidthGap;
-        final int heightGap = mHeightGap;
-        
-        final int hStartPadding = portrait ? mShortAxisStartPadding : mLongAxisStartPadding;
-        final int vStartPadding = portrait ? mLongAxisStartPadding : mShortAxisStartPadding;
-        
-        int width = cellHSpan * cellWidth + ((cellHSpan - 1) * widthGap);
-        int height = cellVSpan * cellHeight + ((cellVSpan - 1) * heightGap);
-
-        int x = hStartPadding + cellX * (cellWidth + widthGap);
-        int y = vStartPadding + cellY * (cellHeight + heightGap);
-        
-        dragRect.set(x, y, x + width, y + height);
     }
     
     /**

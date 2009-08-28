@@ -59,23 +59,4 @@ public interface DropTarget {
      * @return True if the drop will be accepted, false otherwise.
      */
     boolean acceptDrop(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo);
-
-    /**
-     * Estimate the surface area where this object would land if dropped at the
-     * given location.
-     * 
-     * @param source DragSource where the drag started
-     * @param x X coordinate of the drop location
-     * @param y Y coordinate of the drop location
-     * @param xOffset Horizontal offset with the object being dragged where the
-     *            original touch happened
-     * @param yOffset Vertical offset with the object being dragged where the
-     *            original touch happened
-     * @param dragInfo Data associated with the object being dragged
-     * @param recycle {@link Rect} object to be possibly recycled.
-     * @return Estimated area that would be occupied if object was dropped at
-     *         the given location. Should return null if no estimate is found,
-     *         or if this target doesn't provide estimations.
-     */
-    Rect estimateDropLocation(DragSource source, int x, int y, int xOffset, int yOffset, Object dragInfo, Rect recycle);
 }

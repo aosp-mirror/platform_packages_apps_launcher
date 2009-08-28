@@ -66,14 +66,4 @@ public interface DragController {
      *        {@link #DRAG_ACTION_COPY}
      */
     void startDrag(View v, DragSource source, Object info, int dragAction);
-    
-    /**
-     * Sets the drag listner which will be notified when a drag starts or ends.
-     */
-    void setDragListener(DragListener l);
-    
-    /**
-     * Remove a previously installed drag listener.
-     */
-    void removeDragListener(DragListener l);
 }

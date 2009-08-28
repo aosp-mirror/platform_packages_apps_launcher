@@ -348,32 +348,6 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     /**
-     * Adds the specified child in the specified screen. The position and dimension of
-     * the child are defined by x, y, spanX and spanY.
-     *
-     * @param child The child to add in one of the workspace's screens.
-     * @param screen The screen in which to add the child.
-     * @param spanX The number of cells spanned horizontally by the child.
-     * @param spanY The number of cells spanned vertically by the child.
-     */
-    void fitInScreen(View child, int screen, int spanX, int spanY) {
-        if (screen < 0 || screen >= getChildCount()) {
-            throw new IllegalStateException("The screen must be >= 0 and < " + getChildCount());
-        }
-
-        final CellLayout group = (CellLayout) getChildAt(screen);
-        boolean vacant = group.getVacantCell(mTempCell, spanX, spanY);
-        if (vacant) {
-            group.addView(child,
-                    new CellLayout.LayoutParams(mTempCell[0], mTempCell[1], spanX, spanY));
-            child.setOnLongClickListener(mLongClickListener);
-            if (!(child instanceof Folder)) {
-                child.setOnLongClickListener(mLongClickListener);
-            }
-        }
-    }
-
-    /**
      * Registers the specified listener on each screen contained in this workspace.
      *
      * @param l The listener used to respond to long clicks.
