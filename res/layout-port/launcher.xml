@@ -42,7 +42,7 @@
         android:layout_height="fill_parent"
 
         android:topOffset="5dip"
-        android:bottomOffset="7dip"
+        android:bottomOffset="8dip"
         android:handle="@+id/all_apps"
         android:content="@+id/content">
 

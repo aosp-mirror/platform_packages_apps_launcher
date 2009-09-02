@@ -56,6 +56,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
 import static android.util.Log.*;
+import android.util.SparseArray;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -826,12 +827,63 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        // Do not call super here
+        // NOTE: Do NOT do this. Ever. This is a terrible and horrifying hack.
+        //
+        // Home loads the content of the workspace on a background thread. This means that
+        // a previously focused view will be, after orientation change, added to the view
+        // hierarchy at an undeterminate time in the future. If we were to invoke
+        // super.onRestoreInstanceState() here, the focus restoration would fail because the
+        // view to focus does not exist yet.
+        //
+        // However, not invoking super.onRestoreInstanceState() is equally bad. In such a case,
+        // panels would not be restored properly. For instance, if the menu is open then the
+        // user changes the orientation, the menu would not be opened in the new orientation.
+        //
+        // To solve both issues Home messes up with the internal state of the bundle to remove
+        // the properties it does not want to see restored at this moment. After invoking
+        // super.onRestoreInstanceState(), it removes the panels state.
+        //
+        // Later, when the workspace is done loading, Home calls super.onRestoreInstanceState()
+        // again to restore focus and other view properties. It will not, however, restore
+        // the panels since at this point the panels' state has been removed from the bundle.
+        //
+        // This is a bad example, do not do this.
+        //
+        // If you are curious on how this code was put together, take a look at the following
+        // in Android's source code:
+        // - Activity.onRestoreInstanceState()
+        // - PhoneWindow.restoreHierarchyState()
+        // - PhoneWindow.DecorView.onAttachedToWindow()
+        //
+        // The source code of these various methods shows what states should be kept to
+        // achieve what we want here.
+
+        Bundle windowState = savedInstanceState.getBundle("android:viewHierarchyState");
+        SparseArray<Parcelable> savedStates = null;
+        int focusedViewId = View.NO_ID;
+
+        if (windowState != null) {
+            savedStates = windowState.getSparseParcelableArray("android:views");
+            windowState.remove("android:views");
+            focusedViewId = windowState.getInt("android:focusedViewId", View.NO_ID);
+            windowState.remove("android:focusedViewId");
+        }
+
+        super.onRestoreInstanceState(savedInstanceState);
+
+        if (windowState != null) {
+            windowState.putSparseParcelableArray("android:views", savedStates);
+            windowState.putInt("android:focusedViewId", focusedViewId);
+            windowState.remove("android:Panels");
+        }
+
         mSavedInstanceState = savedInstanceState;
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
         outState.putInt(RUNTIME_STATE_CURRENT_SCREEN, mWorkspace.getCurrentScreen());
 
         final ArrayList<Folder> folders = mWorkspace.getOpenFolders();
@@ -843,8 +895,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 ids[i] = info.id;
             }
             outState.putLongArray(RUNTIME_STATE_USER_FOLDERS, ids);
-        } else {
-            super.onSaveInstanceState(outState);
         }
 
         final boolean isConfigurationChange = getChangingConfigurations() != 0;
@@ -976,7 +1026,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (mDesktopLocked) return false;
+        if (mDesktopLocked && mSavedInstanceState == null) return false;
 
         super.onCreateOptionsMenu(menu);
         menu.add(MENU_GROUP_ADD, MENU_ADD, 0, R.string.menu_add)
