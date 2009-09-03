@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.lang.ref.WeakReference;
 import java.text.Collator;
 import java.net.URISyntaxException;
@@ -75,12 +76,16 @@ public class LauncherModel {
             new HashMap<ComponentName, ApplicationInfo>(INITIAL_ICON_CACHE_CAPACITY);
 
     synchronized void abortLoaders() {
+        if (DEBUG_LOADERS) d(LOG_TAG, "aborting loaders");
+
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
+            if (DEBUG_LOADERS) d(LOG_TAG, "  --> aborting applications loader");
             mApplicationsLoader.stop();
             mApplicationsLoaded = false;
         }
 
         if (mDesktopItemsLoader != null && mDesktopItemsLoader.isRunning()) {
+            if (DEBUG_LOADERS) d(LOG_TAG, "  --> aborting workspace loader");
             mDesktopItemsLoader.stop();
             mDesktopItemsLoaded = false;
         }
@@ -126,7 +131,7 @@ public class LauncherModel {
         mApplicationsLoaded = false;
 
         if (!isLaunching) {
-            startApplicationsLoader(launcher, false);
+            startApplicationsLoaderLocked(launcher, false);
             return false;
         }
 
@@ -135,7 +140,9 @@ public class LauncherModel {
 
     private synchronized void stopAndWaitForApplicationsLoader() {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            if (DEBUG_LOADERS) d(LOG_TAG, "  --> wait for applications loader");
+            if (DEBUG_LOADERS) {
+                d(LOG_TAG, "  --> wait for applications loader (" + mApplicationsLoader.mId + ")");
+            }
 
             mApplicationsLoader.stop();
             // Wait for the currently running thread to finish, this can take a little
@@ -143,12 +150,17 @@ public class LauncherModel {
             try {
                 mApplicationsLoaderThread.join(APPLICATION_NOT_RESPONDING_TIMEOUT);
             } catch (InterruptedException e) {
-                // EMpty
+                // Empty
             }
         }
     }
 
     private synchronized void startApplicationsLoader(Launcher launcher, boolean isLaunching) {
+        if (DEBUG_LOADERS) d(LOG_TAG, "  --> starting applications loader unlocked");
+        startApplicationsLoaderLocked(launcher, isLaunching);
+    }
+
+    private void startApplicationsLoaderLocked(Launcher launcher, boolean isLaunching) {
         if (DEBUG_LOADERS) d(LOG_TAG, "  --> starting applications loader");
 
         stopAndWaitForApplicationsLoader();
@@ -160,7 +172,7 @@ public class LauncherModel {
 
     synchronized void addPackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            startApplicationsLoader(launcher, false);
+            startApplicationsLoaderLocked(launcher, false);
             return;
         }
 
@@ -186,7 +198,7 @@ public class LauncherModel {
     synchronized void removePackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
             dropApplicationCache(); // TODO: this could be optimized
-            startApplicationsLoader(launcher, false);
+            startApplicationsLoaderLocked(launcher, false);
             return;
         }
 
@@ -221,7 +233,7 @@ public class LauncherModel {
 
     synchronized void updatePackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            startApplicationsLoader(launcher, false);
+            startApplicationsLoaderLocked(launcher, false);
             return;
         }
 
@@ -265,7 +277,7 @@ public class LauncherModel {
 
     synchronized void syncPackage(Launcher launcher, String packageName) {
         if (mApplicationsLoader != null && mApplicationsLoader.isRunning()) {
-            startApplicationsLoader(launcher, false);
+            startApplicationsLoaderLocked(launcher, false);
             return;
         }
 
@@ -465,16 +477,22 @@ public class LauncherModel {
         application.filtered = false;
     }
 
+    private static final AtomicInteger sAppsLoaderCount = new AtomicInteger(1);
+    private static final AtomicInteger sWorkspaceLoaderCount = new AtomicInteger(1);
+
     private class ApplicationsLoader implements Runnable {
         private final WeakReference<Launcher> mLauncher;
 
         private volatile boolean mStopped;
         private volatile boolean mRunning;
         private final boolean mIsLaunching;
+        private final int mId;
 
         ApplicationsLoader(Launcher launcher, boolean isLaunching) {
             mIsLaunching = isLaunching;
             mLauncher = new WeakReference<Launcher>(launcher);
+            mRunning = true;
+            mId = sAppsLoaderCount.getAndIncrement();
         }
 
         void stop() {
@@ -486,7 +504,7 @@ public class LauncherModel {
         }
 
         public void run() {
-            mRunning = true;
+            if (DEBUG_LOADERS) d(LOG_TAG, "  ----> running applications loader (" + mId + ")");
 
             // Elevate priority when Home launches for the first time to avoid
             // starving at boot time. Staring at a blank home is not cool.
@@ -525,6 +543,8 @@ public class LauncherModel {
 
             if (!mStopped) {
                 mApplicationsLoaded = true;
+            } else {
+                if (DEBUG_LOADERS) d(LOG_TAG, "  ----> applications loader stopped (" + mId + ")");                                
             }
             mRunning = false;
         }
@@ -550,6 +570,7 @@ public class LauncherModel {
             if (mFirst) {
                 applicationList.setNotifyOnChange(false);
                 applicationList.clear();
+                if (DEBUG_LOADERS) d(LOG_TAG, "  ----> cleared application list");
                 mFirst = false;
             }
 
@@ -596,7 +617,7 @@ public class LauncherModel {
             if (DEBUG_LOADERS) d(LOG_TAG, "  --> items loaded, return");
             if (loadApplications) startApplicationsLoader(launcher, true);
             // We have already loaded our data from the DB
-            launcher.onDesktopItemsLoaded();
+            launcher.onDesktopItemsLoaded(mDesktopItems, mDesktopAppWidgets);
             return;
         }
 
@@ -704,6 +725,7 @@ public class LauncherModel {
         private final boolean mLocaleChanged;
         private final boolean mLoadApplications;
         private final boolean mIsLaunching;
+        private final int mId;        
 
         DesktopItemsLoader(Launcher launcher, boolean localeChanged, boolean loadApplications,
                 boolean isLaunching) {
@@ -711,6 +733,7 @@ public class LauncherModel {
             mIsLaunching = isLaunching;
             mLauncher = new WeakReference<Launcher>(launcher);
             mLocaleChanged = localeChanged;
+            mId = sWorkspaceLoaderCount.getAndIncrement();
         }
 
         void stop() {
@@ -722,6 +745,8 @@ public class LauncherModel {
         }
 
         public void run() {
+            if (DEBUG_LOADERS) d(LOG_TAG, "  ----> running workspace loader (" + mId + ")");
+
             mRunning = true;
 
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
@@ -927,16 +952,39 @@ public class LauncherModel {
             }
 
             if (!mStopped) {
-                launcher.runOnUiThread(new Runnable() {
-                    public void run() {
-                        launcher.onDesktopItemsLoaded();
-                    }
-                });
-                if (mLoadApplications) startApplicationsLoader(launcher, mIsLaunching);
-            }
+                if (DEBUG_LOADERS)  {
+                    d(LOG_TAG, "  --> done loading workspace");
+                    d(LOG_TAG, "  ----> worskpace items=" + desktopItems.size());                
+                    d(LOG_TAG, "  ----> worskpace widgets=" + desktopAppWidgets.size());
+                }
 
-            if (!mStopped) {
+                // Create a copy of the lists in case the workspace loader is restarted
+                // and the list are cleared before the UI can go through them
+                final ArrayList<ItemInfo> uiDesktopItems =
+                        new ArrayList<ItemInfo>(desktopItems);
+                final ArrayList<LauncherAppWidgetInfo> uiDesktopWidgets =
+                        new ArrayList<LauncherAppWidgetInfo>(desktopAppWidgets);
+
+                if (!mStopped) {
+                    d(LOG_TAG, "  ----> items cloned, ready to refresh UI");                
+                    launcher.runOnUiThread(new Runnable() {
+                        public void run() {
+                            if (DEBUG_LOADERS) d(LOG_TAG, "  ----> onDesktopItemsLoaded()");
+                            launcher.onDesktopItemsLoaded(uiDesktopItems, uiDesktopWidgets);
+                        }
+                    });
+                }
+
+                if (mLoadApplications) {
+                    if (DEBUG_LOADERS) {
+                        d(LOG_TAG, "  ----> loading applications from workspace loader");
+                    }
+                    startApplicationsLoader(launcher, mIsLaunching);
+                }
+
                 mDesktopItemsLoaded = true;
+            } else {
+                if (DEBUG_LOADERS) d(LOG_TAG, "  ----> worskpace loader was stopped");
             }
             mRunning = false;
         }

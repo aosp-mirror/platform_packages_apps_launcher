@@ -1367,19 +1367,26 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         sModel.loadUserItems(false, this, false, false);
     }
 
-    void onDesktopItemsLoaded() {
-        if (mDestroyed) return;
-        bindDesktopItems();
+    void onDesktopItemsLoaded(ArrayList<ItemInfo> shortcuts,
+            ArrayList<LauncherAppWidgetInfo> appWidgets) {
+        if (mDestroyed) {
+            if (LauncherModel.DEBUG_LOADERS) {
+                d(LauncherModel.LOG_TAG, "  ------> destroyed, ignoring desktop items");
+            }
+            return;
+        }
+        bindDesktopItems(shortcuts, appWidgets);
     }
 
     /**
      * Refreshes the shortcuts shown on the workspace.
      */
-    private void bindDesktopItems() {
-        final ArrayList<ItemInfo> shortcuts = sModel.getDesktopItems();
-        final ArrayList<LauncherAppWidgetInfo> appWidgets = sModel.getDesktopAppWidgets();
+    private void bindDesktopItems(ArrayList<ItemInfo> shortcuts,
+            ArrayList<LauncherAppWidgetInfo> appWidgets) {
+
         final ApplicationsAdapter drawerAdapter = sModel.getApplicationsAdapter();
         if (shortcuts == null || appWidgets == null || drawerAdapter == null) {
+            if (LauncherModel.DEBUG_LOADERS) d(LauncherModel.LOG_TAG, "  ------> a source is null");            
             return;
         }
 
@@ -1529,7 +1536,10 @@ public final class Launcher extends Activity implements View.OnClickListener, On
             final AppWidgetProviderInfo appWidgetInfo = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
             item.hostView = mAppWidgetHost.createView(this, appWidgetId, appWidgetInfo);
 
-            if (LOGD) d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s", appWidgetId, appWidgetInfo));
+            if (LOGD) {
+                d(LOG_TAG, String.format("about to setAppWidget for id=%d, info=%s",
+                       appWidgetId, appWidgetInfo));
+            }
 
             item.hostView.setAppWidget(appWidgetId, appWidgetInfo);
             item.hostView.setTag(item);
@@ -2171,9 +2181,15 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                     mAppWidgets.addLast(appWidgetInfo);
                 }
             }
+
+            if (LauncherModel.DEBUG_LOADERS) {
+                d(Launcher.LOG_TAG, "------> binding " + shortcuts.size() + " items");
+                d(Launcher.LOG_TAG, "------> binding " + appWidgets.size() + " widgets");
+            }
         }
 
         public void startBindingItems() {
+            if (LauncherModel.DEBUG_LOADERS) d(Launcher.LOG_TAG, "------> start binding items");
             obtainMessage(MESSAGE_BIND_ITEMS, 0, mShortcuts.size()).sendToTarget();
         }
 
