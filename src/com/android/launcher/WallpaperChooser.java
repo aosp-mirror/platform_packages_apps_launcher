@@ -108,6 +108,16 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         mIsWallpaperSet = false;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+        if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
+            mLoader.cancel(true);
+            mLoader = null;
+        }
+    }
+
     public void onItemSelected(AdapterView parent, View v, int position, long id) {
         if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
             mLoader.cancel(true);
@@ -203,6 +213,10 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
                 drawable.setDither(true);
 
                 view.postInvalidate();
+
+                mLoader = null;
+            } else {
+               b.recycle(); 
             }
         }
     }
