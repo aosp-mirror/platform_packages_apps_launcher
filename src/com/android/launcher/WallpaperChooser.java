@@ -45,12 +45,11 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
     private ImageView mImageView;
     private boolean mIsWallpaperSet;
 
-    private BitmapFactory.Options mOptions;
     private Bitmap mBitmap;
 
     private ArrayList<Integer> mThumbs;
     private ArrayList<Integer> mImages;
-    private AsyncTask<Integer,Void,Bitmap> mLoader;
+    private WallpaperLoader mLoader;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -60,10 +59,6 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
         findWallpapers();
 
         setContentView(R.layout.wallpaper_chooser);
-
-        mOptions = new BitmapFactory.Options();
-        mOptions.inDither = false;
-        mOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
         mGallery = (Gallery) findViewById(R.id.gallery);
         mGallery.setAdapter(new ImageAdapter(this));
@@ -120,9 +115,9 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 
     public void onItemSelected(AdapterView parent, View v, int position, long id) {
         if (mLoader != null && mLoader.getStatus() != WallpaperLoader.Status.FINISHED) {
-            mLoader.cancel(true);
+            mLoader.cancel();
         }
-        mLoader = new WallpaperLoader().execute(position);
+        mLoader = (WallpaperLoader) new WallpaperLoader().execute(position);
     }
 
     /*
@@ -188,16 +183,29 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
     }
 
     class WallpaperLoader extends AsyncTask<Integer, Void, Bitmap> {
+        BitmapFactory.Options mOptions;
+
+        WallpaperLoader() {
+            mOptions = new BitmapFactory.Options();
+            mOptions.inDither = false;
+            mOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;            
+        }
+        
         protected Bitmap doInBackground(Integer... params) {
             if (isCancelled()) return null;
-            return BitmapFactory.decodeResource(getResources(), mImages.get(params[0]), mOptions);
+            try {
+                return BitmapFactory.decodeResource(getResources(),
+                        mImages.get(params[0]), mOptions);
+            } catch (OutOfMemoryError e) {
+                return null;
+            }            
         }
 
         @Override
         protected void onPostExecute(Bitmap b) {
             if (b == null) return;
 
-            if (!isCancelled()) {
+            if (!isCancelled() && !mOptions.mCancel) {
                 // Help the GC
                 if (mBitmap != null) {
                     mBitmap.recycle();
@@ -218,6 +226,11 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
             } else {
                b.recycle(); 
             }
+        }
+
+        void cancel() {
+            mOptions.requestCancelDecode();
+            super.cancel(true);
         }
     }
 }
