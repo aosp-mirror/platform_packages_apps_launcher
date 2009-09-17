@@ -22,8 +22,7 @@
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Ustaw tapetę"</string>
     <string name="pick_wallpaper" msgid="2674908923379130941">"Galeria tapet"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"Aplikacja nie jest zainstalowana w telefonie."</string>
-    <!-- no translation found for configure_wallpaper (2820186271419674623) -->
-    <skip />
+    <string name="configure_wallpaper" msgid="2820186271419674623">"Konfiguruj..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nazwa folderu"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Zmień nazwę folderu"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
@@ -41,12 +40,9 @@
     <string name="add_photo_frame" msgid="3154058437359487954">"Ramka obrazu"</string>
     <string name="add_search" msgid="7104834713685095105">"Wyszukiwarka"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Brak miejsca na tej stronie głównej"</string>
-    <!-- no translation found for shortcut_installed (7071557296331322355) -->
-    <skip />
-    <!-- no translation found for shortcut_uninstalled (2129499669449749995) -->
-    <skip />
-    <!-- no translation found for shortcut_duplicate (4757756326465060694) -->
-    <skip />
+    <string name="shortcut_installed" msgid="7071557296331322355">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został utworzony."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"Skrót „<xliff:g id="NAME">%s</xliff:g>” został usunięty."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"Skrót „<xliff:g id="NAME">%s</xliff:g>” już istnieje."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Wybierz skrót"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Wybierz folder"</string>
     <string name="menu_add" msgid="3065046628354640854">"Dodaj"</string>

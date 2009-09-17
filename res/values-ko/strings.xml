@@ -22,8 +22,7 @@
     <string name="wallpaper_instructions" msgid="4215640646180727542">"배경화면 설정"</string>
     <string name="pick_wallpaper" msgid="2674908923379130941">"배경화면 갤러리"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"휴대전화에 설치되어 있지 않은 응용프로그램입니다."</string>
-    <!-- no translation found for configure_wallpaper (2820186271419674623) -->
-    <skip />
+    <string name="configure_wallpaper" msgid="2820186271419674623">"구성..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"폴더 이름"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"폴더 이름 바꾸기"</string>
     <string name="rename_action" msgid="6016003384693240896">"확인"</string>
@@ -41,12 +40,9 @@
     <string name="add_photo_frame" msgid="3154058437359487954">"사진 프레임"</string>
     <string name="add_search" msgid="7104834713685095105">"검색"</string>
     <string name="out_of_space" msgid="8365249326091984698">"홈 화면에 더 이상 공간이 없습니다."</string>
-    <!-- no translation found for shortcut_installed (7071557296331322355) -->
-    <skip />
-    <!-- no translation found for shortcut_uninstalled (2129499669449749995) -->
-    <skip />
-    <!-- no translation found for shortcut_duplicate (4757756326465060694) -->
-    <skip />
+    <string name="shortcut_installed" msgid="7071557296331322355">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 생성되었습니다."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 삭제되었습니다."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"바로가기(\'<xliff:g id="NAME">%s</xliff:g>\')가 이미 있습니다."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"바로가기 선택"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"폴더 선택"</string>
     <string name="menu_add" msgid="3065046628354640854">"추가"</string>

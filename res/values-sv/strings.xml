@@ -22,8 +22,7 @@
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Ange bakgrund"</string>
     <string name="pick_wallpaper" msgid="2674908923379130941">"Bakgrundsgalleri"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"Programmet är inte installerat på din telefon."</string>
-    <!-- no translation found for configure_wallpaper (2820186271419674623) -->
-    <skip />
+    <string name="configure_wallpaper" msgid="2820186271419674623">"Konfigurera..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Mappnamn"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Byt namn på mapp"</string>
     <string name="rename_action" msgid="6016003384693240896">"OK"</string>
@@ -41,12 +40,9 @@
     <string name="add_photo_frame" msgid="3154058437359487954">"Bildram"</string>
     <string name="add_search" msgid="7104834713685095105">"Sök"</string>
     <string name="out_of_space" msgid="8365249326091984698">"Det finns inte plats för mer på den här startsidan."</string>
-    <!-- no translation found for shortcut_installed (7071557296331322355) -->
-    <skip />
-    <!-- no translation found for shortcut_uninstalled (2129499669449749995) -->
-    <skip />
-    <!-- no translation found for shortcut_duplicate (4757756326465060694) -->
-    <skip />
+    <string name="shortcut_installed" msgid="7071557296331322355">"Genvägen \"<xliff:g id="NAME">%s</xliff:g>\" har skapats."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"Genvägen \"<xliff:g id="NAME">%s</xliff:g>\" har tagits bort."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"Genvägen \"<xliff:g id="NAME">%s</xliff:g>\" finns redan."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Välj genväg"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Välj mapp"</string>
     <string name="menu_add" msgid="3065046628354640854">"Lägg till"</string>

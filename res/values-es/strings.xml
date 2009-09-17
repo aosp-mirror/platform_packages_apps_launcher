@@ -22,8 +22,7 @@
     <string name="wallpaper_instructions" msgid="4215640646180727542">"Establecer fondo de pantalla"</string>
     <string name="pick_wallpaper" msgid="2674908923379130941">"Galería de fondos de pantalla"</string>
     <string name="activity_not_found" msgid="3571057450431950427">"La aplicación no está instalada en el teléfono."</string>
-    <!-- no translation found for configure_wallpaper (2820186271419674623) -->
-    <skip />
+    <string name="configure_wallpaper" msgid="2820186271419674623">"Configurar..."</string>
     <string name="rename_folder_label" msgid="5646236631298452787">"Nombre de carpeta"</string>
     <string name="rename_folder_title" msgid="4544573104191526550">"Cambiar nombre de carpeta"</string>
     <string name="rename_action" msgid="6016003384693240896">"Aceptar"</string>
@@ -41,12 +40,9 @@
     <string name="add_photo_frame" msgid="3154058437359487954">"Picture frame"</string>
     <string name="add_search" msgid="7104834713685095105">"Búsqueda de Google"</string>
     <string name="out_of_space" msgid="8365249326091984698">"No queda espacio en esta pantalla de página principal."</string>
-    <!-- no translation found for shortcut_installed (7071557296331322355) -->
-    <skip />
-    <!-- no translation found for shortcut_uninstalled (2129499669449749995) -->
-    <skip />
-    <!-- no translation found for shortcut_duplicate (4757756326465060694) -->
-    <skip />
+    <string name="shortcut_installed" msgid="7071557296331322355">"Se ha creado el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
+    <string name="shortcut_uninstalled" msgid="2129499669449749995">"Se ha eliminado el acceso directo \"<xliff:g id="NAME">%s</xliff:g>\"."</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"El acceso directo \"<xliff:g id="NAME">%s</xliff:g>\" ya existe."</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"Seleccionar acceso directo"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"Seleccionar carpeta"</string>
     <string name="menu_add" msgid="3065046628354640854">"Añadir"</string>
