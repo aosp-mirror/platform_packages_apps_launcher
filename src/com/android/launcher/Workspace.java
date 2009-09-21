@@ -339,6 +339,18 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
         return null;
     }
+    
+    CellLayout.CellInfo findAllVacantCellsFromModel() {
+        CellLayout group = (CellLayout) getChildAt(mCurrentScreen);
+        if (group != null) {
+            int countX = group.getCountX();
+            int countY = group.getCountY();
+            boolean occupied[][] = new boolean[countX][countY];
+            Launcher.getModel().findAllOccupiedCells(occupied, countX, countY, mCurrentScreen);
+            return group.findAllVacantCellsFromOccupied(occupied, countX, countY);
+        }
+        return null;
+    }
 
     private void clearVacantCache() {
         if (mVacantCache != null) {

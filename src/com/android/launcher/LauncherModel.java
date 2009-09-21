@@ -476,7 +476,7 @@ public class LauncherModel {
                 Utilities.createIconThumbnail(info.activityInfo.loadIcon(manager), context);
         application.filtered = false;
     }
-
+ 
     private static final AtomicInteger sAppsLoaderCount = new AtomicInteger(1);
     private static final AtomicInteger sWorkspaceLoaderCount = new AtomicInteger(1);
 
@@ -1131,6 +1131,43 @@ public class LauncherModel {
         }
     }
 
+    /**
+     * Fills in the occupied structure with all of the shortcuts, apps, folders and widgets in
+     * the model. 
+     */
+    void findAllOccupiedCells(boolean[][] occupied, int countX, int countY, int screen) {
+        final ArrayList<ItemInfo> desktopItems = mDesktopItems;
+        if (desktopItems != null) {
+            final int count = desktopItems.size();
+            for (int i = 0; i < count; i++) {
+                ItemInfo item = desktopItems.get(i);
+                addOccupiedCells(occupied, screen, desktopItems.get(i));
+            }
+        }
+        
+        final ArrayList<LauncherAppWidgetInfo> desktopAppWidgets = mDesktopAppWidgets;
+        if (desktopAppWidgets != null) {
+            final int count = desktopAppWidgets.size();
+            for (int i = 0; i < count; i++) {
+                addOccupiedCells(occupied, screen, desktopAppWidgets.get(i));
+            }
+        }
+    }
+
+    /**
+     * Add the footprint of the specified item to the occupied array
+     */
+    private void addOccupiedCells(boolean[][] occupied, int screen,
+            ItemInfo item) {
+        if (item.screen == screen) {
+            for (int xx = item.cellX; xx < item.cellX + item.spanX; xx++) {
+                for (int yy = item.cellY; yy < item.cellY + item.spanY; yy++) {
+                    occupied[xx][yy] = true;
+                }
+            }
+        }
+    }
+    
     /**
      * @return The current list of applications
      */

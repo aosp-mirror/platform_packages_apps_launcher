@@ -345,6 +345,15 @@ public class CellLayout extends ViewGroup {
             findOccupiedCells(xCount, yCount, occupied, ignoreView);
         }
 
+        return findAllVacantCellsFromOccupied(occupied, xCount, yCount);
+    }
+
+    /**
+     * Variant of findAllVacantCells that uses LauncerModel as its source rather than the 
+     * views.
+     */
+    CellInfo findAllVacantCellsFromOccupied(boolean[][] occupied,
+            final int xCount, final int yCount) {
         CellInfo cellInfo = new CellInfo();
 
         cellInfo.cellX = -1;
