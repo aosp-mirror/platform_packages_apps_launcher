@@ -160,6 +160,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
     private static int sScreen = DEFAULT_SCREN;
 
     private final BroadcastReceiver mApplicationsReceiver = new ApplicationsIntentReceiver();
+    private final BroadcastReceiver mCloseSystemDialogsReceiver = new CloseSystemDialogsIntentReceiver();
     private final ContentObserver mObserver = new FavoritesChangeObserver();
     private final ContentObserver mWidgetObserver = new AppWidgetResetObserver();
 
@@ -778,34 +779,38 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         return info;
     }
 
+    void closeSystemDialogs() {
+        getWindow().closeAllPanels();
+        
+        try {
+            dismissDialog(DIALOG_CREATE_SHORTCUT);
+            // Unlock the workspace if the dialog was showing
+            mWorkspace.unlock();
+        } catch (Exception e) {
+            // An exception is thrown if the dialog is not visible, which is fine
+        }
+
+        try {
+            dismissDialog(DIALOG_RENAME_FOLDER);
+            // Unlock the workspace if the dialog was showing
+            mWorkspace.unlock();
+        } catch (Exception e) {
+            // An exception is thrown if the dialog is not visible, which is fine
+        }
+    }
+    
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
         // Close the menu
         if (Intent.ACTION_MAIN.equals(intent.getAction())) {
-            getWindow().closeAllPanels();
+            closeSystemDialogs();
             
             // Set this flag so that onResume knows to close the search dialog if it's open,
             // because this was a new intent (thus a press of 'home' or some such) rather than
             // for example onResume being called when the user pressed the 'back' button.
             mIsNewIntent = true;
-
-            try {
-                dismissDialog(DIALOG_CREATE_SHORTCUT);
-                // Unlock the workspace if the dialog was showing
-                mWorkspace.unlock();
-            } catch (Exception e) {
-                // An exception is thrown if the dialog is not visible, which is fine
-            }
-
-            try {
-                dismissDialog(DIALOG_RENAME_FOLDER);
-                // Unlock the workspace if the dialog was showing
-                mWorkspace.unlock();
-            } catch (Exception e) {
-                // An exception is thrown if the dialog is not visible, which is fine
-            }
 
             if ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) !=
                     Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) {
@@ -951,6 +956,7 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         getContentResolver().unregisterContentObserver(mObserver);
         getContentResolver().unregisterContentObserver(mWidgetObserver);
         unregisterReceiver(mApplicationsReceiver);
+        unregisterReceiver(mCloseSystemDialogsReceiver);
     }
 
     @Override
@@ -1336,6 +1342,8 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
         filter.addDataScheme("package");
         registerReceiver(mApplicationsReceiver, filter);
+        filter = new IntentFilter(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+        registerReceiver(mCloseSystemDialogsReceiver, filter);
     }
 
     /**
@@ -2083,6 +2091,16 @@ public final class Launcher extends Activity implements View.OnClickListener, On
                 }
                 sModel.syncPackage(Launcher.this, packageName);
             }
+        }
+    }
+
+    /**
+     * Receives notifications when applications are added/removed.
+     */
+    private class CloseSystemDialogsIntentReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            closeSystemDialogs();
         }
     }
 
