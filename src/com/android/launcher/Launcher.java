@@ -1070,7 +1070,6 @@ public final class Launcher extends Activity implements View.OnClickListener, On
         // We can't trust the view state here since views we may not be done binding.
         // Get the vacancy state from the model instead.
         mMenuAddInfo = mWorkspace.findAllVacantCellsFromModel();
-        mMenuAddInfo = mWorkspace.findAllVacantCells(null);
         menu.setGroupEnabled(MENU_GROUP_ADD, mMenuAddInfo != null && mMenuAddInfo.valid);
 
         return true;
