@@ -897,11 +897,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             throw new IllegalStateException("Unknown item type: " + info.itemType);
         }
 
-        mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout, mTargetCell);
-        if (mTargetCell == null) return;
-
-        view.setOnLongClickListener(mLongClickListener);
         cellLayout.addView(view, insertAtFirst ? 0 : -1);
+        view.setOnLongClickListener(mLongClickListener);
+        mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout, mTargetCell);
         cellLayout.onDropChild(view, mTargetCell);
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
