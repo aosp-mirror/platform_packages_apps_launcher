@@ -897,9 +897,11 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
             throw new IllegalStateException("Unknown item type: " + info.itemType);
         }
 
-        cellLayout.addView(view, insertAtFirst ? 0 : -1);
-        view.setOnLongClickListener(mLongClickListener);
         mTargetCell = estimateDropCell(x, y, 1, 1, view, cellLayout, mTargetCell);
+        if (mTargetCell == null) return;
+
+        view.setOnLongClickListener(mLongClickListener);
+        cellLayout.addView(view, insertAtFirst ? 0 : -1);
         cellLayout.onDropChild(view, mTargetCell);
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
 
@@ -939,8 +941,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     /**
      * {@inheritDoc}
      */
-    public Rect estimateDropLocation(DragSource source, int x, int y,
-            int xOffset, int yOffset, Object dragInfo, Rect recycle) {
+    public Rect estimateDropLocation(int x, int y, int xOffset, int yOffset, Rect recycle) {
         final CellLayout layout = getCurrentDropLayout();
         
         final CellLayout.CellInfo cellInfo = mDragInfo;
@@ -980,8 +981,7 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
         }
 
         // Find the best target drop location
-        return layout.findNearestVacantArea(pixelX, pixelY,
-                spanX, spanY, mVacantCache, recycle);
+        return layout.findNearestVacantArea(pixelX, pixelY, spanX, spanY, mVacantCache, recycle);
     }
     
     void setLauncher(Launcher launcher) {
@@ -993,6 +993,9 @@ public class Workspace extends ViewGroup implements DropTarget, DragSource, Drag
     }
 
     public void onDropCompleted(View target, boolean success) {
+        // This is a bit expensive but safe
+        clearVacantCache();
+
         if (success){
             if (target != this && mDragInfo != null) {
                 final CellLayout cellLayout = (CellLayout) getChildAt(mDragInfo.screen);
