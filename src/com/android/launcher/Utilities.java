@@ -154,27 +154,40 @@ final class Utilities {
         final int bitmapWidth = bitmap.getWidth();
         final int bitmapHeight = bitmap.getHeight();
 
-        if (width > 0 && height > 0 && (width < bitmapWidth || height < bitmapHeight)) {
-            final float ratio = (float) bitmapWidth / bitmapHeight;
-
-            if (bitmapWidth > bitmapHeight) {
-                height = (int) (width / ratio);
-            } else if (bitmapHeight > bitmapWidth) {
-                width = (int) (height * ratio);
+        if (width > 0 && height > 0) {
+            if (width < bitmapWidth || height < bitmapHeight) {
+                final float ratio = (float) bitmapWidth / bitmapHeight;
+    
+                if (bitmapWidth > bitmapHeight) {
+                    height = (int) (width / ratio);
+                } else if (bitmapHeight > bitmapWidth) {
+                    width = (int) (height * ratio);
+                }
+    
+                final Bitmap.Config c = (width == sIconWidth && height == sIconHeight) ?
+                        bitmap.getConfig() : Bitmap.Config.ARGB_8888;
+                final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
+                final Canvas canvas = sCanvas;
+                final Paint paint = sPaint;
+                canvas.setBitmap(thumb);
+                paint.setDither(false);
+                paint.setFilterBitmap(true);
+                sBounds.set((sIconWidth - width) / 2, (sIconHeight - height) / 2, width, height);
+                sOldBounds.set(0, 0, bitmapWidth, bitmapHeight);
+                canvas.drawBitmap(bitmap, sOldBounds, sBounds, paint);
+                return thumb;
+            } else if (bitmapWidth < width || bitmapHeight < height) {
+                final Bitmap.Config c = Bitmap.Config.ARGB_8888;
+                final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
+                final Canvas canvas = sCanvas;
+                final Paint paint = sPaint;
+                canvas.setBitmap(thumb);
+                paint.setDither(false);
+                paint.setFilterBitmap(true);
+                canvas.drawBitmap(bitmap, (sIconWidth - bitmapWidth) / 2,
+                        (sIconHeight - bitmapHeight) / 2, paint);
+                return thumb;
             }
-
-            final Bitmap.Config c = (width == sIconWidth && height == sIconHeight) ?
-                    bitmap.getConfig() : Bitmap.Config.ARGB_8888;
-            final Bitmap thumb = Bitmap.createBitmap(sIconWidth, sIconHeight, c);
-            final Canvas canvas = sCanvas;
-            final Paint paint = sPaint;
-            canvas.setBitmap(thumb);
-            paint.setDither(false);
-            paint.setFilterBitmap(true);
-            sBounds.set((sIconWidth - width) / 2, (sIconHeight - height) / 2, width, height);
-            sOldBounds.set(0, 0, bitmapWidth, bitmapHeight);
-            canvas.drawBitmap(bitmap, sOldBounds, sBounds, paint);
-            return thumb;
         }
 
         return bitmap;
