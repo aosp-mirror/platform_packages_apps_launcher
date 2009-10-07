@@ -62,6 +62,11 @@ public class AllAppsGridView extends GridView implements AdapterView.OnItemClick
     }
 
     @Override
+    public boolean isOpaque() {
+        return !mTexture.hasAlpha();
+    }
+
+    @Override
     protected void onFinishInflate() {
         setOnItemClickListener(this);
         setOnItemLongClickListener(this);
