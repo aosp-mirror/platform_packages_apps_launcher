@@ -16,6 +16,9 @@
 
 package com.android.launcher;
 
+import static android.util.Log.d;
+import static android.util.Log.w;
+
 import android.appwidget.AppWidgetHost;
 import android.content.ContentProvider;
 import android.content.Context;
@@ -24,6 +27,7 @@ import android.content.Intent;
 import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.ContentResolver;
+import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.content.res.TypedArray;
 import android.content.pm.PackageManager;
@@ -42,6 +46,7 @@ import android.os.*;
 import android.provider.Settings;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -173,6 +178,7 @@ public class LauncherProvider extends ContentProvider {
     private static class DatabaseHelper extends SQLiteOpenHelper {
         private static final String TAG_FAVORITES = "favorites";
         private static final String TAG_FAVORITE = "favorite";
+        private static final String TAG_SHORTCUT = "shortcut";
         private static final String TAG_CLOCK = "clock";
         private static final String TAG_SEARCH = "search";
 
@@ -531,11 +537,13 @@ public class LauncherProvider extends ContentProvider {
                             a.getString(R.styleable.Favorite_y));
 
                     if (TAG_FAVORITE.equals(name)) {
-                        added = addShortcut(db, values, a, packageManager, intent);
+                        added = addAppShortcut(db, values, a, packageManager, intent);
                     } else if (TAG_SEARCH.equals(name)) {
                         added = addSearchWidget(db, values);
                     } else if (TAG_CLOCK.equals(name)) {
                         added = addClockWidget(db, values);
+                    } else if (TAG_SHORTCUT.equals(name)) {
+                        added = addShortcut(db, values, a);
                     }
 
                     if (added) i++;
@@ -551,7 +559,7 @@ public class LauncherProvider extends ContentProvider {
             return i;
         }
 
-        private boolean addShortcut(SQLiteDatabase db, ContentValues values, TypedArray a,
+        private boolean addAppShortcut(SQLiteDatabase db, ContentValues values, TypedArray a,
                 PackageManager packageManager, Intent intent) {
 
             ActivityInfo info;
@@ -574,6 +582,42 @@ public class LauncherProvider extends ContentProvider {
                         "/" + className, e);
                 return false;
             }
+            return true;
+        }
+        
+        private boolean addShortcut(SQLiteDatabase db, ContentValues values, TypedArray a) {
+            Resources r = mContext.getResources();
+            
+            final int iconResId = a.getResourceId(R.styleable.Favorite_icon, 0);
+            final int titleResId = a.getResourceId(R.styleable.Favorite_title, 0);
+            
+            Intent intent = null;
+            String uri = null;
+            try {
+                uri = a.getString(R.styleable.Favorite_uri);
+                intent = Intent.parseUri(uri, 0);
+            } catch (URISyntaxException e) {
+                w(LauncherModel.LOG_TAG, "Shortcut has malformed uri: " + uri);
+                return false; // Oh well
+            }
+            
+            if (iconResId == 0 || titleResId == 0) {
+                w(LauncherModel.LOG_TAG, "Shortcut is missing title or icon resource ID");
+                return false;
+            }
+            
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            values.put(Favorites.INTENT, intent.toUri(0));
+            values.put(Favorites.TITLE, r.getString(titleResId));
+            values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_SHORTCUT);
+            values.put(Favorites.SPANX, 1);
+            values.put(Favorites.SPANY, 1);
+            values.put(Favorites.ICON_TYPE, Favorites.ICON_TYPE_RESOURCE);
+            values.put(Favorites.ICON_PACKAGE, mContext.getPackageName());
+            values.put(Favorites.ICON_RESOURCE, mContext.getResources().getResourceName(iconResId));
+
+            db.insert(TABLE_FAVORITES, null, values);
+
             return true;
         }
 
