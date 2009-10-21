@@ -42,7 +42,7 @@
     <string name="out_of_space" msgid="8365249326091984698">"首頁已無空間"</string>
     <string name="shortcut_installed" msgid="7071557296331322355">"已建立「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>
     <string name="shortcut_uninstalled" msgid="2129499669449749995">"已移除「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>
-    <string name="shortcut_duplicate" msgid="4757756326465060694">"已有「<xliff:g id="NAME">%s</xliff:g>」捷徑。"</string>
+    <string name="shortcut_duplicate" msgid="4757756326465060694">"「<xliff:g id="NAME">%s</xliff:g>」捷徑已經存在。"</string>
     <string name="title_select_shortcut" msgid="2858897527672831763">"選取捷徑"</string>
     <string name="title_select_live_folder" msgid="3753447798805166749">"選取資料夾"</string>
     <string name="menu_add" msgid="3065046628354640854">"新增"</string>
