@@ -483,6 +483,7 @@ public class LauncherModel {
     private class ApplicationsLoader implements Runnable {
         private final WeakReference<Launcher> mLauncher;
 
+        private final Object stopLock = new Object();
         private volatile boolean mStopped;
         private volatile boolean mRunning;
         private final boolean mIsLaunching;
@@ -496,7 +497,9 @@ public class LauncherModel {
         }
 
         void stop() {
-            mStopped = true;
+            synchronized (stopLock) {
+               mStopped = true;
+            }
         }
 
         boolean isRunning() {
@@ -541,10 +544,12 @@ public class LauncherModel {
                 launcher.runOnUiThread(action);
             }
 
-            if (!mStopped) {
-                mApplicationsLoaded = true;
-            } else {
-                if (DEBUG_LOADERS) d(LOG_TAG, "  ----> applications loader stopped (" + mId + ")");                                
+            synchronized (stopLock) {
+                if (!mStopped) {
+                    mApplicationsLoaded = true;
+                } else {
+                    if (DEBUG_LOADERS) d(LOG_TAG, "  ----> applications loader stopped (" + mId + ")");                                
+                }
             }
             mRunning = false;
         }
