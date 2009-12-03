@@ -16,7 +16,6 @@
 
 package com.android.launcher;
 
-import static android.util.Log.d;
 import static android.util.Log.w;
 
 import android.appwidget.AppWidgetHost;
@@ -60,7 +59,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final String DATABASE_NAME = "launcher.db";
     
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     static final String AUTHORITY = "com.android.launcher.settings";
     
@@ -68,7 +67,6 @@ public class LauncherProvider extends ContentProvider {
     static final String EXTRA_BIND_TARGETS = "com.android.launcher.settings.bindtargets";
 
     static final String TABLE_FAVORITES = "favorites";
-    static final String TABLE_GESTURES = "gestures";
     static final String PARAMETER_NOTIFY = "notify";
 
     /**
@@ -372,35 +370,89 @@ public class LauncherProvider extends ContentProvider {
             }
 
             if (version < 4) {
-                db.beginTransaction();
-                try {
-                    db.execSQL("CREATE TABLE gestures (" +
-                        "_id INTEGER PRIMARY KEY," +
-                        "title TEXT," +
-                        "intent TEXT," +
-                        "itemType INTEGER," +
-                        "iconType INTEGER," +
-                        "iconPackage TEXT," +
-                        "iconResource TEXT," +
-                        "icon BLOB" +
-                        ");");
-                    db.setTransactionSuccessful();
-                    version = 4;
-                } catch (SQLException ex) {
-                    // Old version remains, which means we wipe old data
-                    Log.e(LOG_TAG, ex.getMessage(), ex);
-                } finally {
-                    db.endTransaction();
+                version = 4;
+            }
+
+            if (version < 5) {
+                if (updateContactsShortcuts(db)) {
+                    version = 5;
                 }
             }
             
             if (version != DATABASE_VERSION) {
                 Log.w(LOG_TAG, "Destroying all old data.");
                 db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAVORITES);
-                db.execSQL("DROP TABLE IF EXISTS " + TABLE_GESTURES);
                 onCreate(db);
             }
         }
+        
+        private boolean updateContactsShortcuts(SQLiteDatabase db) {
+            Cursor c = null;
+            final String selectWhere = buildOrWhereString(LauncherSettings.Favorites.ITEM_TYPE,
+                    new int[] { LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT });
+
+            db.beginTransaction();
+            try {
+                // Select and iterate through each matching widget
+                c = db.query(TABLE_FAVORITES, new String[] { LauncherSettings.Favorites._ID,
+                        LauncherSettings.Favorites.INTENT }, selectWhere, null, null, null, null);
+                
+                if (LOGD) Log.d(LOG_TAG, "found upgrade cursor count=" + c.getCount());
+                
+                final ContentValues values = new ContentValues();
+                final int idIndex = c.getColumnIndex(LauncherSettings.Favorites._ID);
+                final int intentIndex = c.getColumnIndex(LauncherSettings.Favorites.INTENT);
+                
+                while (c != null && c.moveToNext()) {
+                    long favoriteId = c.getLong(idIndex);
+                    final String intentUri = c.getString(intentIndex);
+                    if (intentUri != null) {
+                        try {
+                            Intent intent = Intent.parseUri(intentUri, 0);
+                            android.util.Log.d("Home", intent.toString());
+                            final Uri uri = intent.getData();
+                            final String data = uri.toString();
+                            if (Intent.ACTION_VIEW.equals(intent.getAction()) &&
+                                    (data.startsWith("content://contacts/people/") ||
+                                    data.startsWith("content://com.android.contacts/contacts/lookup/"))) {
+
+                                intent = new Intent("com.android.contacts.action.QUICK_CONTACT");
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+
+                                intent.setData(uri);
+                                intent.putExtra("mode", 3);
+                                intent.putExtra("exclude_mimes", (String[]) null);
+
+                                values.clear();
+                                values.put(LauncherSettings.Favorites.INTENT, intent.toUri(0));
+    
+                                String updateWhere = LauncherSettings.Favorites._ID + "=" + favoriteId;
+                                db.update(TABLE_FAVORITES, values, updateWhere, null);                                
+                            }
+                        } catch (RuntimeException ex) {
+                            Log.e(LOG_TAG, "Problem upgrading shortcut", ex);
+                        } catch (URISyntaxException e) {
+                            Log.e(LOG_TAG, "Problem upgrading shortcut", e);                            
+                        }
+                    }
+                }
+                
+                db.setTransactionSuccessful();
+            } catch (SQLException ex) {
+                Log.w(LOG_TAG, "Problem while upgrading contacts", ex);
+                return false;
+            } finally {
+                db.endTransaction();
+                if (c != null) {
+                    c.close();
+                }
+            }
+
+            return true;
+        }
+        
         
         /**
          * Upgrade existing clock and photo frame widgets into their new widget
@@ -591,7 +643,7 @@ public class LauncherProvider extends ContentProvider {
             final int iconResId = a.getResourceId(R.styleable.Favorite_icon, 0);
             final int titleResId = a.getResourceId(R.styleable.Favorite_title, 0);
             
-            Intent intent = null;
+            Intent intent;
             String uri = null;
             try {
                 uri = a.getString(R.styleable.Favorite_uri);
