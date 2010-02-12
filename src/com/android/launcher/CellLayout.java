@@ -16,6 +16,7 @@
 
 package com.android.launcher;
 
+import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.content.res.Resources;
@@ -58,6 +59,9 @@ public class CellLayout extends ViewGroup {
     private RectF mDragRect = new RectF();
 
     private boolean mDirtyTag;
+    private boolean mLastDownOnOccupiedCell = false;
+    
+    private final WallpaperManager mWallpaperManager;
 
     public CellLayout(Context context) {
         this(context, null);
@@ -97,6 +101,8 @@ public class CellLayout extends ViewGroup {
                 mOccupied = new boolean[mLongAxisCells][mShortAxisCells];
             }
         }
+        
+        mWallpaperManager = WallpaperManager.getInstance(getContext());        
     }
 
     @Override
@@ -176,6 +182,8 @@ public class CellLayout extends ViewGroup {
                     }
                 }
             }
+
+            mLastDownOnOccupiedCell = found;
 
             if (!found) {
                 int cellXY[] = mCellXY;
@@ -523,6 +531,16 @@ public class CellLayout extends ViewGroup {
                 int childLeft = lp.x;
                 int childTop = lp.y;
                 child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
+                
+                if (lp.dropped) {
+                    lp.dropped = false;
+
+                    final int[] cellXY = mCellXY;
+                    getLocationOnScreen(cellXY);
+                    mWallpaperManager.sendWallpaperCommand(getWindowToken(), "android.home.drop",
+                            cellXY[0] + childLeft + lp.width / 2,
+                            cellXY[1] + childTop + lp.height / 2, 0, null);
+                }
             }
         }
     }
@@ -611,6 +629,7 @@ public class CellLayout extends ViewGroup {
             lp.cellX = targetXY[0];
             lp.cellY = targetXY[1];
             lp.isDragging = false;
+            lp.dropped = true;            
             mDragRect.setEmpty();
             child.requestLayout();
             invalidate();
@@ -742,6 +761,10 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
             }
         }
     }
+    
+    public boolean lastDownOnOccupiedCell() {
+        return mLastDownOnOccupiedCell;
+    }
 
     @Override
     public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
@@ -794,8 +817,10 @@ out:            for (int i = x; i < x + spanX - 1 && x < xCount; i++) {
         // Y coordinate of the view in the layout.
         @ViewDebug.ExportedProperty
         int y;
-
+        
         boolean regenerateId;
+        
+        boolean dropped;        
 
         public LayoutParams(Context c, AttributeSet attrs) {
             super(c, attrs);
