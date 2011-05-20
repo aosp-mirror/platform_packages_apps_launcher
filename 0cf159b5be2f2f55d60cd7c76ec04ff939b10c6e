@@ -1,0 +1,8 @@
+Change-Id: I0cf159b5be2f2f55d60cd7c76ec04ff939b10c6e
+Code-Review+2: Jean-Baptiste Queru <jbq@google.com>
+Verified+1: Jean-Baptiste Queru <jbq@google.com>
+Submitted-by: Jean-Baptiste Queru <jbq@google.com>
+Submitted-at: Wed, 18 Mar 2009 13:57:14 -0700
+Reviewed-on: https://review.source.android.com/9188
+Project: platform/packages/apps/Launcher
+Branch: refs/heads/master
