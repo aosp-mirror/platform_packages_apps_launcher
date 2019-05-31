@@ -44,14 +44,12 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 
     private static final Integer[] THUMB_IDS = {
             R.drawable.wallpaper_lake_small,
-            R.drawable.wallpaper_sunset_small,
             R.drawable.wallpaper_beach_small,
             R.drawable.wallpaper_snow_leopard_small,
             R.drawable.wallpaper_path_small,
             R.drawable.wallpaper_sunrise_small,
             R.drawable.wallpaper_mountain_small,
             R.drawable.wallpaper_road_small,
-            R.drawable.wallpaper_jellyfish_small,
             R.drawable.wallpaper_zanzibar_small,
             R.drawable.wallpaper_blue_small,
             R.drawable.wallpaper_grey_small,
@@ -61,14 +59,12 @@ public class WallpaperChooser extends Activity implements AdapterView.OnItemSele
 
     private static final Integer[] IMAGE_IDS = {
             R.drawable.wallpaper_lake,
-            R.drawable.wallpaper_sunset,
             R.drawable.wallpaper_beach,
             R.drawable.wallpaper_snow_leopard,
             R.drawable.wallpaper_path,
             R.drawable.wallpaper_sunrise,
             R.drawable.wallpaper_mountain,
             R.drawable.wallpaper_road,
-            R.drawable.wallpaper_jellyfish,
             R.drawable.wallpaper_zanzibar,
             R.drawable.wallpaper_blue,
             R.drawable.wallpaper_grey,
